@@ -1,0 +1,1520 @@
+\documentclass{ctexart}
+\usepackage{xeCJK}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{graphicx} 
+\usepackage{geometry}
+\usepackage{multicol}
+\usepackage{listings}
+\usepackage{diagbox}
+\usepackage{xcolor}  % 用于代码高亮颜色
+\usepackage{tcolorbox} 
+\tcbuselibrary{breakable} % 新增：加载 breakable 库
+\usepackage{amsmath}
+\usepackage{bm}  % 更好的粗体数学符号
+\usepackage{wrapfig}
+
+
+\lstset{
+    backgroundcolor=\color{gray!10},  % 背景颜色
+    basicstyle=\ttfamily\small,      % 基本字体样式
+    breaklines=true,                 % 自动换行
+    frame=single,                    % 边框样式
+    numbers=left,                    % 显示行号
+    numberstyle=\tiny\color{gray},   % 行号样式
+    keywordstyle=\color{red},       % 关键字颜色
+    commentstyle=\color{green!40!black},  % 注释颜色
+    stringstyle=\color{orange},      % 字符串颜色
+    showstringspaces=false           % 不显示字符串中的空格
+}
+\geometry{
+    left=2cm,
+    right=2cm,
+    top=2cm,
+    bottom=1.6cm}
+\newcommand{\dd}{\mathop{}\!\mathrm{d}}
+\newcommand{\vx}{\bm{x}}
+\newcommand{\vt}{\bm{t}}
+% 修改：添加 breakable 选项，允许盒子跨页
+\newtcolorbox{mybox}[2][]{colback=#1!5!white, colframe=#1!75!black, fonttitle=\bfseries, title={#2}, breakable}
+\begin{document}
+
+% 颜色说明：蓝色代表定义，红色代表关键定理的说明、证明，黄色代表intro或解释、说明，绿色代表题
+\title{Intro to Functional Analysis -- Brief Review}
+\date{}
+\author{}
+\maketitle
+
+\section{度量空间}
+\subsection{基本定义与性质}
+\begin{mybox}[blue]{度量空间}
+    设$X$是一个非空集合，定义二元函数$d: X \times X \to \mathbb{R}^+$满足：
+    \begin{enumerate}
+        \item \textbf{（正定性）} $d(x,y)\geq 0$ 且 $d(x,y)=0 \iff x=y$
+        \item \textbf{（对称性）} $d(x,y) = d(y,x)$
+        \item \textbf{（三角不等式）} $d(x,y) \le d(x,z) + d(z,y)$，$\forall x,y,z \in X$
+    \end{enumerate}
+    \textbf{注：同一个集合$X$上可以有多种不同的度量方式，最初级的度量方式便是“离散度量”。}
+\end{mybox}
+
+\textbf{开集、闭集的定义是数分课程的必会内容，这里不再抄写。值得注意的是集合的开/闭与度量的定义有关。}
+
+\textbf{注：在度量空间中的点列收敛即为$d(x_n,x_0)\to0\iff x_n\to x_0$。}
+
+\begin{mybox}[blue]{映射的连续性}
+    设$X,Y$均为度量空间，映射$T:X\to Y$对于$x_0\in X$满足：对任意点列$x_n\to x_0，x_n\in X$都有$Tx_n\to Tx_0\iff$ 映射$T$在$x_0$处连续。
+
+    \textbf{注：通常还有第二种定义，这两种定义是等价的：}$\forall\varepsilon>0, \exists\delta>0, \forall x\in B(x_0, \delta), |T(x)-T(x_0)|<\varepsilon$。
+
+    \textbf{定义的等价性证明为数分内容，略去。}
+\end{mybox}
+
+\begin{mybox}[red]{整体角度的连续刻画}
+    $T$为连续映射$\iff$（1）对任意开集$U\subset Y, T^{-1}(U)$是开集；（2）对任意闭集$U\subset Y, T^{-1}(U)$是闭集；
+
+    \textbf{（1）的必要性证明：}设$T^{-1}x\in T^{-1}(U)$，则对$x\in U,\exists\varepsilon>0, B(x,\varepsilon)\subset U$
+    
+    又对于$\varepsilon$存在$\delta>0$使得$\forall y\in B(T^{-1}x,\delta), d(x, Ty)<\varepsilon\implies Ty\in B(x,\varepsilon)\subset U\implies y\in T^{-1}(U)$
+
+    因此$B(T^{-1}x,\delta)\subset T^{-1}(U)$
+
+    \textbf{（1）的充分性证明：}考虑开球的原像$T^{-1}B(Tx_0,\varepsilon)$（其中$\varepsilon$是任取的正数）
+    
+    根据条件可知它是一个开集，且可以肯定$x_0\in T^{-1}B(Tx_0,\varepsilon)\implies\exists\delta>0, B(x_0,\delta)\subset T^{-1}B(Tx_0,\varepsilon)$
+
+    综上，$\forall\varepsilon>0, \exists\delta>0, \forall x\in B(x_0, \delta), |Tx-Tx_0|<\varepsilon$。
+
+    \textbf{最后(1)(2)等价，这可以由取补集得到。}
+\end{mybox}
+
+\begin{mybox}[blue]{同胚}
+    给定度量空间$X,Y$，若映射$f:X\to Y$满足\begin{enumerate}
+        \item $f$是双射
+        \item $f$是连续的
+        \item $f^{-1}$是连续的
+    \end{enumerate}则称$X$与$Y$是同胚的，$f$为同胚映射。
+
+    {\color{red}\textbf{注：同胚代表着共享所有拓扑不变量，这包含了紧致性，这也是本课程最常用到的结论之一。证明将在后面给出。}}
+\end{mybox}
+
+
+
+
+
+
+\subsection{可分度量空间}
+\textbf{稠密：为数分课要求掌握的内容，定义略去。}
+\begin{mybox}[blue]{可分度量空间}
+    若度量空间$A$有可数的稠密子集，则称其为可分的。
+\end{mybox}
+\begin{mybox}[green]{常见可分例子}
+    \begin{enumerate}
+        \item $C[0,1]$可分。
+        
+        \textbf{说明：连续函数可以用多项式逼近，而任何多项式又可以用有理多项式集合逼近，有理多项式是可数的。}
+
+        \item $L[0,1]$可分
+        
+        \textbf{说明：根据实变函数的知识，$L[0,1]$ 中的可积函数可以用连续函数来逼近（在 $L^1$ 范数下）；而连续函数又可以由有理系数的多项式来一致逼近，且有理系数多项式集合是可数的，因此 $L[0,1]$ 是可分的。}
+
+        \item $l^p (1\leq p<\infty)$可分。
+        
+        \textbf{说明：可以用有限多项非0、每一项都是有理数的数列集合逼近，这个集合是可数的，而且包含于$l^p$}
+    \end{enumerate}
+\end{mybox}
+
+\begin{mybox}[green]{怎么说明一个集合是不可分的？}
+    \textbf{方法：构造一个不可数集合，其间元素两两距离大于某常数。}
+
+    \textbf{例1：$l^{\infty}$空间，考虑集合$\{\{a_n\}|a_n=0, 1\}\subset l^{\infty}$，该集合不可数，且两两距离$\geq1\implies$ $l^{\infty}$不可分。}
+    \newline
+
+    \textbf{例2：$BC(R)$空间，考虑连续函数列$f_n(x)$，其中$f_n(x)$在$[n,n+1]$上为一个“锯齿形”，其余部分为0，再考虑其中若干个函数之和组成的集合。这个集合也不可分，且两两距离为1。}
+\end{mybox}
+
+\subsection{完备度量空间}
+\begin{mybox}[blue]{完备度量空间的定义}
+    若度量空间$X$中的任意柯西列$\{x_n\}$都一定收敛到$X$中某点$x_0$，则称$X$是完备的。
+\end{mybox}
+
+
+\subsection{紧空间}
+\begin{mybox}[blue]{紧空间的定义}
+    若度量空间$X$中的集合$A$满足，$A$中任意点列都存在收敛子列，且收敛于$X$中的点，则称$A$为列紧的。特别地，若收敛于$A$中的点，则称为自列紧（紧）。
+\end{mybox}
+
+\begin{mybox}[red]{紧空间的等价定义}
+    在度量空间 $(X, d)$ 中，关于集合 $A \subset X$ 的以下三个命题是\textbf{等价}的：
+    \begin{enumerate}
+        \item \textbf{序列紧（自列紧）}：$A$ 中的任意点列都有收敛子列，且极限在 $A$ 中。（这是上一条中使用的定义）
+        \item \textbf{覆盖紧（开覆盖定理）}：$A$ 的任意开覆盖都必定存在有限子覆盖。
+        \item \textbf{完备且完全有界}：$A$ 作为子空间是完备的，且对于任意 $\varepsilon > 0$，$A$ 都能被有限个半径为 $\varepsilon$ 的开球覆盖（即存在有限 $\varepsilon$-网）。
+    \end{enumerate}
+    {\color{red}\textbf{形象：紧是拓扑意义上的有限，无论用多小的开球去覆盖都只需要有限个。它是保证最值存在、局部性质能推广到整体的核心条件。}}
+\end{mybox}
+
+\subsection{压缩映射定理}
+\begin{mybox}[red]{压缩映射定理}
+
+    设 $(X, d)$ 是完备度量空间，映射 $T: X \to X$ 满足压缩条件：存在常数 $0 \leq k < 1$，使得对任意 $x, y \in X$ 有
+    $d(Tx, Ty) \leq k \cdot d(x, y)$，则 $T$ 有唯一不动点 $x^* \in X$（即 $Tx^* = x^*$）；
+
+
+
+    \noindent\textbf{证明}：任取 $x_0 \in X$，令 $x_{n+1} = T(x_n)$，$n \geq 0$，则由压缩性：$d(x_{n+1}, x_n) \leq k^n d(x_1, x_0)$。
+
+    对 $m > n$，
+    \[
+        d(x_m, x_n) \leq \sum_{j=n}^{m-1} d(x_{j+1}, x_j) \leq \sum_{j=n}^{m-1} k^j d(x_1, x_0) \leq \frac{k^n}{1-k}d(x_1, x_0) \to 0 \quad (n \to \infty).
+    \]
+    由 $X$ 的完备性，存在 $x^* \in X$ 使 $x_n \to x^*$。
+
+    由于 $T$ 连续（压缩映射必连续），
+    \[
+    T(x^*) = T(\lim_{n\to\infty} x_n) = \lim_{n\to\infty} T(x_n) = \lim_{n\to\infty} x_{n+1} = x^*.
+    \]
+
+    \textbf{唯一性证明}：若 $y^*$ 也是不动点，则
+    \[
+    d(x^*, y^*) = d(Tx^*, Ty^*) \leq k d(x^*, y^*),
+    \]
+    由于 $k<1$，必须 $d(x^*, y^*) = 0$，故 $x^* = y^*$。
+
+\end{mybox}
+
+\section{赋范线性空间与Banach空间}
+
+\subsection{基本定义}
+
+\begin{mybox}[blue]{赋范线性空间的定义}
+    设 $X$ 是实数域或复数域 $\mathbb{K}$ 上的线性空间。如果对于 $X$ 中的每一个元素 $x$，都有一个实数 $||x||$ 与之对应，且满足以下三个条件：
+    \begin{enumerate}
+        \item \textbf{（正定性）} $||x|| \ge 0$，且 $||x|| = 0 \iff x = \mathbf{0}$；
+        \item \textbf{（绝对齐次性）} $||\alpha x|| = |\alpha| \cdot ||x||$，$\forall \alpha \in \mathbb{K}$，$\forall x \in X$；
+        \item \textbf{（三角不等式）} $||x + y|| \le ||x|| + ||y||$，$\forall x, y \in X$。
+    \end{enumerate}
+    则称 $||x||$ 为元素 $x$ 的\textbf{范数 (Norm)}，称 $(X, ||\cdot||)$ 为\textbf{赋范线性空间}。
+
+    \textbf{注：} 赋范线性空间天然是一个度量空间，其诱导度量为 $d(x, y) = ||x - y||$。范数不仅刻画了向量的“长度”，还刻画了向量之间的“距离”。所有度量空间的性质（开集、闭集、连续性、完备性）都可以直接平移过来。
+\end{mybox}
+
+\begin{mybox}[red]{Banach 空间的定义}
+    如果赋范线性空间 $(X, ||\cdot||)$ 作为其诱导度量空间 $(X, d)$ 是\textbf{完备的}（即其中的任意柯西列都按范数收敛到空间内的一点），则称 $X$ 为 \textbf{Banach 空间}。
+
+    \textbf{经典例子：}
+    \begin{itemize}
+        \item $\mathbb{R}^n, \mathbb{C}^n$ 配合 $p$-范数是 Banach 空间。
+        \item $C[a, b]$ 配合最大值范数 $||f||_\infty = \max_{t \in [a,b]} |f(t)|$ 是 Banach 空间。
+        \item $L^p[a, b]$ 和 $l^p$ ($1 \le p \le \infty$) 配合各自的 $p$-范数 都是 Banach 空间。
+    \end{itemize}
+\end{mybox}
+
+\subsection{范数的等价性与有限维空间}
+
+\begin{mybox}[blue]{等价范数}
+    设 $||\cdot||_1$ 和 $||\cdot||_2$ 是线性空间 $X$ 上的两种范数。如果存在常数 $c, C > 0$，使得对任意 $x \in X$，都有：
+    \[ c||x||_1 \le ||x||_2 \le C||x||_1 \]
+    则称这两种范数是\textbf{等价的}。
+
+    \textbf{重要性质：} 等价范数诱导相同的拓扑结构（即收敛序列完全相同，开集闭集完全相同，完备性相同）。
+\end{mybox}
+
+\begin{mybox}[red]{有限维赋范空间的极其重要性质}
+    \begin{enumerate}
+        \item \textbf{范数全等价}：有限维线性空间上的\textbf{任意}两种范数都是等价的。
+        \item \textbf{必定完备}：有限维赋范线性空间一定是 Banach 空间（即有限维子空间一定是闭子空间）。
+        \item \textbf{Riesz 引理与紧性}：赋范线性空间 $X$ 是有限维的 $\iff$ 其闭单位球 $B = \{x \in X \mid ||x|| \le 1\}$ 是\textbf{紧集}。
+    \end{enumerate}
+    
+    {\color{red}\textbf{核心直观：}} Riesz 引理是无穷维空间与有限维空间的分水岭。它说明在无穷维空间中，单位球一定不紧（里面可以塞下无穷多个相互距离大于等于 $1-\varepsilon$ 的点，就像一只长满长刺的刺猬）。这也是为什么我们在无穷维空间里需要引入“紧算子”和“弱收敛”等概念的根本原因！
+\end{mybox}
+
+
+\section{线性算子与线性泛函}
+\subsection{基本定义与性质}
+\begin{mybox}[blue]{线性算子的定义}
+    设 $X, Y$ 是同一个数域 $\mathbb{K}$上的线性空间。
+    一个映射 $T: X \to Y$ 被称为\textbf{线性算子}，如果满足：
+    对任意 $x, y \in X$ 和任意标量 $\alpha, \beta \in \mathbb{K}$，都有
+    \[ T(\alpha x + \beta y) = \alpha T(x) + \beta T(y) \]
+    
+    \textbf{注：} 
+    \begin{itemize}
+        \item 线性算子必然把零元映射为零元，即 $T(\mathbf{0}_X) = \mathbf{0}_Y$。
+        \item \textbf{极其重要的特例：} 当目标空间 $Y = \mathbb{K}$（即映射结果是一个具体的数）时，该线性算子特称为\textbf{线性泛函 (Linear Functional)}。
+    \end{itemize}
+\end{mybox}
+
+
+\begin{mybox}[blue]{线性算子的有界性}
+    若存在常数$M$使得线性算子$T:X\to Y$对于$\forall x\in X$满足$||Tx||\leq C||x||$，则称线性算子$T$有界。
+\end{mybox}
+
+\begin{mybox}[red]{线性算子的连续和有界等价}
+    \textbf{必要性证明：}若$T$连续，则对任意点列$x_n\to 0$有$Tx_n\to0$
+
+    若不有界，则可以构造模长为1的点列$\{x_n\}$使得$||Tx_n||\geq n$。
+    
+    注意到点列$\{\dfrac{x_n}{n}\}\to0$但$||\dfrac{Tx_n}{n}||=1$，这与题目假设矛盾。
+
+    \textbf{充分性证明：}若$T$有界$C$，对于点列$x_n\to0$有$||Tx_n||\leq C||x_n||\to0\implies Tx_n\to0$。
+\end{mybox}
+
+\begin{mybox}[red]{非零线性泛函连续的充要条件}
+    设$X$是赋范线性空间，$f$是$X$上的非零线性泛函，则$f$连续$\iff N(f)$是$X$上的闭子集。
+
+    \textbf{必要性证明：}取$N(f)$中收敛子列$x_n\to x_0$，则由$f$的连续性可知$f(x_n)\to f(x_0)$
+    
+    又$f(x_n)=0$恒成立，因此$f(x_0)=0\implies x_0\in N(f)$。
+
+    \textbf{充分性证明：}反证法，假设$f$不连续，也就是说$f$不是有界的，则存在$||x_n||=1, |f(x_n)|\geq n$
+
+    构造$N(f)$中的点列$y_n=\dfrac{x_1}{f(x_1)}-\dfrac{x_n}{f(x_n)}\implies f(y_n)=0\implies y_n\in N(f)$
+
+    又因为$y_n\to\dfrac{x_1}{f(x_1)}\implies f(y_n)\to 1$，这和$f(y_n)=0$矛盾！
+\end{mybox}
+
+\begin{mybox}[red]{非零线性泛函不连续的充要条件}
+    设$X$是赋范线性空间，$f$是$X$上的非零线性泛函，则$f$不连续$\iff N(f)$是$X$上的稠密子集。
+
+    \textbf{必要性证明：}由不连续性，可以取一列$x_n\to 0$使得$|f(x_n)|\geq \varepsilon$
+
+    对于$\forall x\in X$，考虑$x-\dfrac{x_n}{f(x_n)}f(x)\in N(f)$，注意到
+    \[||x-\dfrac{x_n}{f(x_n)}f(x)-x||=\dfrac{|f(x)|}{|f(x_n)|}||x_n||\leq\dfrac{|f(x)|}{\varepsilon}||x_n|| \to0\]
+    因此$\forall x\in X$，存在$N(f)$中的点列趋近于$x$。
+
+    \textbf{充分性证明：}假设连续，$\forall x\in X$，存在$N(f)$中的一列$ x_n\to x$。
+    
+    则$0=f(x_n)\to f(x)\implies f=0$恒成立，因此$f$是零泛函，矛盾。
+\end{mybox}
+
+
+
+
+
+
+
+
+\subsection{对偶空间}
+\begin{mybox}[blue]{定义：对偶空间}
+对于\textbf{Banach空间}$X$，考虑$X$上的所有\textbf{连续线性泛函}$f:X\to R$，事实上可以验证这些\textbf{连续线性泛函}构成\textbf{Banach空间}（对应范数为算子范数）。
+
+将这一Banach空间记为$Y$，则称$Y$是$X$的对偶空间，记为$Y=X^*$。
+\end{mybox}
+
+\begin{mybox}[yellow]{引入：丘砖高代中的有限维例子}
+    考虑定义在Banach空间$K^n$上的\textbf{线性函数（也是泛函）}$f$，它们的解析式通式形如：
+    \[\forall \vx=(x_1,x_2,\cdots, x_n)\in K^n, \: f(\vx)=\sum_{k=1}^n a_k x_k\]
+
+    所有的这些线性函数，其实就是“取分量函数”（即函数$f_i(\vx)=x_i\:(1\leq i\leq n)$）的线性组合。
+    
+    也就是说，这$n$个“取分量函数”构成了$(K^n)^*$的基，因此显然$(K^n)^*$也是Banach空间。
+\end{mybox}
+
+\begin{mybox}[red]{重要性质：对偶空间是Banach空间}
+    \textbf{证明：}设$X$为Banach空间，$X^*$中有一个Cauchy泛函列$f_n$
+
+    首先构造目标的收敛泛函$f$：$\forall x\in X, ||f_m(x)-f_n(x)||\leq ||f_m-f_n||||x|| \to0$
+    
+    因此$\{f_n(x)\}$是Cauchy列，设其极限为$y$
+    
+    由此可以得到一个线性映射关系$f: x\mapsto y$，即$\forall x\in X, f_n(x)\to f(x)$
+
+    下证明$f\in X^*$，即证明有界性：因 $\{f_n\}$ 是柯西列，故是有界列，即存在 $M$ 使得 $||f_n|| \le M$。
+        \[ |f(x)| = \lim_{n\to\infty} |f_n(x)| \le \lim_{n\to\infty} ||f_n|| \cdot ||x|| \le M ||x|| \]
+        故 $f$ 有界，即 $f \in X^*$。
+
+    最后证明$f_n\to f$：因为 $\{f_n\}$ 是柯西列，$\forall \epsilon > 0, \exists N$，当 $n, m > N$ 时$||f_n - f_m|| < \epsilon$
+    
+    即对任意 $x$ ($||x||= 1$)有$|f_n(x) - f_m(x)| < \epsilon $，\textbf{固定 $n$，令 $m \to \infty$}，得$ |f_n(x) - f(x)| \le \epsilon$
+    
+    取上确界，即得$||f_n - f|| = \displaystyle\sup_{||x||= 1} |f_n(x) - f(x)| \le \epsilon, \quad \forall n > N \implies f_n \to f$
+    
+    因此$X^*$是完备的，即为Banach空间。
+\end{mybox}
+
+\begin{mybox}[red]{经典结论：$(l^p)^*$ 与 $l^q$ 的等距同构}
+    设 $1 \le p < \infty$，且 $p+q=pq$。则 $(l^p)^* \cong l^q$。
+
+    \textbf{证明：}
+    
+    \textbf{第一步：构造映射（从 $l^q$ 到 $(l^p)^*$）}
+    对于任意 $y = (y_n) \in l^q$，定义 $l^p$ 上的线性泛函 $f_y$：
+    \[ f_y(x) = \sum_{n=1}^{\infty} x_n y_n, \quad \forall x \in l^p \]
+    由 H\"older 不等式：$|f_y(x)| \le ||x||_p ||y||_q$，故 $f_y \in (l^p)^*$ 且 $||f_y|| \le ||y||_q$。
+    
+    进一步，根据Holder 不等式取等条件），可证 $||f_y|| = ||y||_q$。
+    由此建立了\textbf{保距单射} $\Phi: y \mapsto f_y$。
+    \newline
+
+    \textbf{第二步：证明满射（从 $(l^p)^*$ 到 $l^q$）}
+    任取 $g \in (l^p)^*$，我们要寻找一个 $y \in l^q$ 满足$f_y=g$。
+    
+    1. \textbf{确定 $y$ 的形式}：
+       取 $l^p$ 的标准基 $e_k = (0,\dots,1,\dots)$，定义 $y_k = g(e_k)$。
+       由此得到序列 $y = (y_1, y_2, \dots)$。
+
+    2. \textbf{验证 $y \in l^q$}：
+       考虑 $y$ 的前 $n$ 项截断。构造测试向量 $x^{(n)} = (\xi_1, \dots, \xi_n, 0, \dots)$，其中：
+       \[ \xi_k = |y_k|^{q-1} \text{sgn}(y_k) \]
+       那么 $||x^{(n)}||_p = (\sum_{k=1}^n |y_k|^{(q-1)p})^{1/p} = (\sum_{k=1}^n |y_k|^q)^{1/p}$。
+       
+       利用 $g$ 的有界性：
+       \[ g(x^{(n)}) = \sum_{k=1}^n y_k \xi_k = \sum_{k=1}^n |y_k|^q \le ||g|| \cdot ||x^{(n)}||_p \]
+       代入范数计算并化简（两边消去 $(\sum |y_k|^q)^{1/p}$），得：
+       \[ (\sum_{k=1}^n |y_k|^q)^{1/q} \le ||g|| \]
+       令 $n \to \infty$，得 $||y||_q \le ||g|| < \infty\implies y \in l^q$。
+
+    3. \textbf{验证$f_y=g$}：
+       现在我们有了 $y \in l^q$，它对应的泛函是 $f_y$。
+       对于任意 $x \in l^p$，由于 $p < \infty$，有限线性组合稠密。
+       $g$ 和 $f_y$ 在基向量 $e_k$ 上显然相等（由 $y_k$ 定义），故由连续性，它们在整个空间上相等。
+       即 $g = f_y$。
+    
+    综上，$\Phi$ 是保距同构。
+\end{mybox}
+
+\begin{mybox}[green]{例：$(c_0)^*=l^1$}
+    \textbf{证明思路完全同上，构造$l^1$与$(c_0)^*$之间的双射。}
+
+    \textbf{值得注意的是，$(l^{\infty})^*\neq l^1$！！}
+\end{mybox}
+\begin{mybox}[red]{$L^p$空间}
+    $(L^p(E))^*=L^q(E)$，其中$p+q=pq,1\leq p<+\infty$
+    
+    证明较复杂，涉及到许多测度论知识，故略去。
+
+    \textbf{注：此处的$E$可以是无限测度空间，这一点和$L^p$空间的包含关系不一样！}
+\end{mybox}
+
+
+
+\subsection{算子的谱}
+\begin{mybox}[blue]{算子的谱与预解集}
+    设 $X$ 是复 Banach 空间，$T \in \mathcal{B}(X)$ 是有界线性算子。
+    考察算子 $T_\lambda = \lambda I - T$（其中 $\lambda \in \mathbb{C}$）。
+    
+    \textbf{1. 预解集 $\rho(T)$：}
+    如果 $T_\lambda$ \textbf{存在有界的逆算子}（即 $(\lambda I - T)^{-1} \in \mathcal{B}(X)$），那么称 $\lambda\in C$ 属于 $T$ 的预解集。
+    \newline
+    
+    \textbf{2. 谱集 $\sigma(T)$ ：}
+    复平面上预解集的补集，即 $\sigma(T) = \mathbb{C} \setminus \rho(T)$。
+    
+\end{mybox}
+
+\begin{mybox}[red]{谱的三种分类}
+    无穷维空间的奇妙之处在于，$\lambda I - T$ 出毛病的方式有三种，因此谱集被划分为三个互不相交的部分：
+    
+    \begin{enumerate}
+        \item \textbf{点谱 $\sigma_p(T)$：}
+        $T_\lambda$ \textbf{不是单射}，也就是逆映射不存在。
+        
+        这意味着存在非零向量 $x$ 使得 $(\lambda I - T)x = 0\implies Tx = \lambda x$。
+        这就是线性代数里最熟悉的\textbf{特征值}！
+        
+        \item \textbf{连续谱 $\sigma_c(T)$：}
+        $T_\lambda$ \textbf{是单射}，也就是逆映射存在，且它的值域是\textbf{稠密的}（几乎满射）。
+        
+        但是它的逆算子\textbf{无界}，这种现象是无穷维独有的“病态”。
+        
+        \item \textbf{剩余谱 $\sigma_r(T)$：}
+        $T_\lambda$ \textbf{是单射}，也就是逆映射存在，但它的值域\textbf{不稠密}（严重不满射）。
+    \end{enumerate}
+
+\end{mybox}
+
+\begin{mybox}[red]{谱集和正则集的性质}
+
+    \textbf{定理：} 有界线性算子的正则集 $\rho(T)$ 一定是复平面上的\textbf{开集}。
+
+    \textbf{定理：} 有界线性算子的谱集 $\sigma(T)$ 一定是复平面上的\textbf{非空紧集}，且谱半径 $r(T) = \displaystyle\max_{\lambda \in \sigma(T)} |\lambda| \le ||T||$。
+
+    \textbf{证明：}
+    
+    \textbf{1. 证明正则集 $\rho(T)$ 是开集}
+    
+    任取 $\lambda_0 \in \rho(T)$，这意味着逆算子 $R(\lambda_0) = (\lambda_0 I - T)^{-1}$ 存在且有界。
+    我们要证明 $\lambda_0$ 的一个小邻域内的点也都属于 $\rho(T)$。
+    对于任意复数 $\lambda$，我们可以做如下代数变形：
+    \[ \lambda I - T = (\lambda_0 I - T) - (\lambda_0 - \lambda)I = (\lambda_0 I - T) [ I - (\lambda_0 - \lambda)R(\lambda_0) ] \]
+    记 $A = (\lambda_0 - \lambda)R(\lambda_0)$。
+    只要 $\lambda$ 足够接近 $\lambda_0$，使得：
+    \[ ||A|| = |\lambda - \lambda_0| \cdot ||R(\lambda_0)|| < 1 \]
+    即 $|\lambda - \lambda_0| < \frac{1}{||R(\lambda_0)||}$ 时，根据 \textbf{Neumann 级数定理}，算子 $(I - A)$ 是可逆的。
+    
+    由于 $\lambda I - T$ 是两个可逆算子 $(\lambda_0 I - T)$ 和 $(I - A)$ 的乘积，因此它也是可逆的。
+    这说明 $\lambda_0$ 的一个开邻域完全包含在 $\rho(T)$ 中。故 $\rho(T)$ 是开集。
+    \newline
+
+    \textbf{2. 证明谱集 $\sigma(T)$ 是紧集（有界闭集）}
+    
+    \begin{itemize}
+        \item \textbf{闭集：} 由集合论定义，$\sigma(T) = \mathbb{C} \setminus \rho(T)$。因为刚刚证明了 $\rho(T)$ 是开集，所以其补集 $\sigma(T)$ 必然是闭集。
+        
+        \item \textbf{有界性：} 考察 $|\lambda| > ||T||$ 的情况。
+        此时有 $||\frac{T}{\lambda}|| = \frac{||T||}{|\lambda|} < 1$。
+        我们可以把算子写成：$\lambda I - T = \lambda (I - \frac{T}{\lambda})$。
+        同样利用 Neumann 级数可知 $(I - \frac{T}{\lambda})$ 可逆，因此 $\lambda I - T$ 可逆。
+        这意味着：所有模长大于 $||T||$ 的 $\lambda$ 都属于正则集。
+        反之，谱集 $\sigma(T)$ 必须被限制在闭圆盘 $\{\lambda \in \mathbb{C} \mid |\lambda| \le ||T||\}$ 内部。
+    \end{itemize}
+    
+    综上所述，$\sigma(T)$ 是复平面上的有界闭集，即为紧集。
+    
+    \textit{（注：关于“非空性”的证明此处略去细节，仅需记住结论。）}
+\end{mybox}
+
+\subsection{Banach空间上的共轭算子}
+\begin{mybox}[blue]{Banach 空间上的共轭算子定义}
+    设 $X, Y$ 是 Banach 空间，$T \in B(X, Y)$ 是有界线性算子。
+
+    对于任意 $g \in Y^*$，设$T^*g\in X^*$ 是 $X$ 上的一个线性泛函，满足：
+    \[ (T^*g)(x) = g(Tx), \quad \forall x \in X \]
+    则称 $T$ 的共轭算子为 $T^*: Y^* \to X^*$。
+\end{mybox}
+
+\begin{mybox}[red]{Banach 共轭算子的基本性质：保范性}
+    对于上述定义的共轭算子 $T^*$，有 $T^* \in B(Y^*, X^*)$，且算子范数相等：$||T^*|| = ||T||$。
+
+    \textbf{证明：}
+    \begin{enumerate}
+    \item \textbf{证明 $T^*$ 是有界线性算子（且 $||T^*|| \le ||T||$）：}
+    线性显然。我们来计算范数：
+    对于任意 $x \in X, g \in Y^*$，利用泛函有界性和算子有界性，有：
+    \[ |(T^*g)(x)| = |g(Tx)| \le ||g|| \cdot ||Tx|| \le ||g||_{Y^*} \cdot ||T|| \cdot ||x|| \]
+    由于这对于所有 $x$ 成立，取上确界得到 $X^*$ 中的泛函范数：
+    \[ ||T^*g||_{X^*} = \sup_{||x||=1} |(T^*g)(x)| \le ||T|| \cdot ||g||_{Y^*} \]
+    这说明 $T^*$ 是有界的，且 $||T^*|| \le ||T||$。
+
+    \item\textbf{证明 $||T|| \le ||T^*||$：}
+    对于任意 $x \in X$，其像 $Tx \in Y$。
+    根据 Hahn-Banach 定理（选取span$\{Tx\}$作为子空间），存在一个泛函 $g_0 \in Y^*$，满足 $||g_0|| = 1$ 且 $g_0(Tx) = ||Tx||$。
+    
+    把这个特别的 $g_0$ 代入共轭算子的定义中：
+    \[ ||Tx|| = g_0(Tx) = (T^*g_0)(x) \le ||T^*g_0|| \cdot ||x|| \le ||T^*|| \cdot ||g_0|| \cdot ||x|| = ||T^*|| \cdot ||x|| \]
+    
+    根据算子范数定义，取上确界得到$||T|| \le ||T^*|| $
+    \end{enumerate}
+\end{mybox}
+
+\subsection{巴拿赫空间的基本定理}
+\subsubsection{Hahn-Banach定理}
+\begin{mybox}[red]{实Hahn-Banach定理：将一个泛函从小的子空间延拓到整个空间中}
+    设实线性空间$X$的子空间是$X_1$，$p$是定义在$X$上的次线性泛函，$f$是定义在$X_1$上的线性泛函，满足$f(x)\leq p(x),\forall x\in X_1$，\textbf{则可将$f$延拓到$X$上的线性泛函$g$使得$g|_{X_1}=f, g(x)\leq p(x), \forall x\in X$。}
+
+    \begin{mybox}[blue]{次线性泛函}
+        若定义在线性空间X上的泛函$p(x)$满足，$\forall x,y\in X, \lambda>0$有下界\begin{enumerate}
+            \item $p(\lambda x)=\lambda p(x)$
+            \item $p(x+y)\leq p(x)+p(y)$
+        \end{enumerate}
+    \end{mybox}
+
+    \textbf{形象理解：想象有一个只能测量物体长度的尺子（线性泛函），现在你想测量物体的体积（更大空间里的线性泛函）。Hahn-Banach定理说：
+            如果你能在小空间（比如一维线段）上定义某种“合理的测量规则”（满足某些条件），
+            那么你就能把这个测量规则安全地（保持原有线性、有界性等）推广到整个大空间（三维空间），而不会产生矛盾。}
+    \newline
+
+    \textbf{证明：STEP 1：在$X_1$的基础上，拓展一个维度。}
+
+    不妨设$X\neq X_1, \exists x_0\in X\setminus X_1$，考虑子空间$X_2=X_1+\text{span}\{x_0\}=\{x_1+\lambda x_0|\lambda\in R, x_1\in X_1\}$
+
+    将泛函延拓到$X_2$上：设$f(x_0)=c$（其中$c$是人为设定的，\textbf{待定}）
+
+    即$f(x_1+\lambda x_0)=\lambda c+f(x_1)$
+\newline
+
+\textbf{STEP 2：检验延拓后的泛函是否满足条件}
+
+首先，延拓后的泛函显然保持线性。为了使其仍被$p$控制，我们要求
+\[f(x_1+\lambda x_0)=f(x_1)+\lambda c\leq p(x_1+\lambda x_0), \forall \lambda \in R, x_1\in X_1\]
+\[\implies c\leq \dfrac{p(x_1+\lambda x_0)-f(x_1)}{\lambda}, \forall \lambda>0, x_1\in X_1 \text{ 且 }\: c\geq \dfrac{f(x_2)-p(x_2-\mu x_0)}{\mu}, \forall \mu>0, x_2\in X_1\]
+
+我们需要验证这两个不等式是可以同时满足的，事实上
+\[\dfrac{f(x_2)-p(x_2-\mu x_0)}{\mu}\leq \dfrac{p(x_1+\lambda x_0)-f(x_1)}{\lambda}\iff f(\dfrac{x_1}{\lambda}+\dfrac{x_2}{\mu})\leq p(\dfrac{x_1}{\lambda}+ x_0)+p(\dfrac{x_2}{\mu}-x_0)\]
+
+注意到$p(\dfrac{x_1}{\lambda}+ x_0)+p(\dfrac{x_2}{\mu}- x_0)\geq p(\dfrac{x_1}{\lambda}+\dfrac{x_2}{\mu})\geq f(\dfrac{x_1}{\lambda}+\dfrac{x_2}{\mu})$，因此这一要求能够满足，即：
+
+\[{\sup_{\lambda>0, x\in X}} \dfrac{f(x)-p(x-\lambda x_0)}{\lambda} \leq \inf_{\lambda>0, x\in X} \dfrac{p(x+\lambda x_0)-f(x)}{\lambda}\]
+
+\textbf{取$c$落在这一区间里即可满足控制的要求。}
+\newline
+
+\textbf{STEP 3：使用Zorn引理完成整体延拓}
+
+设 $\mathcal{F}$ 是所有满足以下条件的$(Y, g)$ 的集合：
+\begin{itemize}
+    \item $X_1 \subset Y \subset X$ 是线性子空间
+    \item $g: Y \to \mathbb{R}$ 是线性泛函
+    \item $g|_{X_1} = f_1$（即延拓了原来定义的 $f_1$）
+    \item $g(x) \leq p(x)$ 对所有 $x \in Y$
+\end{itemize}
+
+在 $\mathcal{F}$ 上定义偏序：$(Y, g) \preceq (Y', g')$ 当且仅当 $Y \subset Y'$ 且 $g'|_Y = g$。
+
+\begin{itemize}
+    \item $\mathcal{F}$ 非空：$(X_2, f_2) \in \mathcal{F}$（这里 $f_2$ 是我们在STEP 2中构造的延拓）。
+    \item 任意链有上界：设 $\{(Y_\alpha, g_\alpha)\}_{\alpha \in A}$ 是 $\mathcal{F}$ 中的链。令
+    \[
+    Y = \bigcup_{\alpha \in A} Y_\alpha, \quad g(x) = g_\alpha(x) \text{ 当 } x \in Y_\alpha.
+    \]
+    由链的定义，$g$ 是良定义的线性泛函，且满足控制条件，所以 $(Y, g) \in \mathcal{F}$ 是该链的上界。
+\end{itemize}
+
+由Zorn引理，$\mathcal{F}$ 有极大元 $(Y_{\max}, g_{\max})$。
+\newline
+
+\textbf{STEP 4：证明 $Y_{\max} = X$}
+
+假设 $Y_{\max} \neq X$，则存在 $x_0 \in X \setminus Y_{\max}$。重复STEP 1-2的过程，可将 $g_{\max}$ 延拓到 $Y_{\max} + \text{span}\{x_0\}$，这与 $(Y_{\max}, g_{\max})$ 的极大性矛盾。
+
+因此 $Y_{\max} = X$。令 $f = g_{\max}$，则 $f: X \to \mathbb{R}$ 是 $f_1$ 的线性延拓，且满足
+\[
+f(x) \leq p(x) \quad \forall x \in X.
+\]
+
+\end{mybox}
+
+\begin{mybox}[red]{复Hahn-Banach定理}
+    此时的控制改为“半范数”：（1）$p(x)\geq0$；（2）$p(x+y)\leq p(x)+p(y)$；（3）$p(\lambda x)=|\lambda|p(x)$
+
+    \textbf{定理的证明是类似的，对实部和虚部分开讨论。作为初级笔记，主要讨论实的情况。}
+\end{mybox}
+
+\begin{mybox}[red]{推论：保范延拓}
+    给定赋范空间$X$和子空间$X_1$，设$f(x)$是$X_1$上的连续线性泛函，则存在$X$上的连续线性泛函$F(x)$满足：$F|_{X_1}=f, ||F||=||f||_{X_1}$（保范数延拓）。
+
+    \textbf{在延拓过程中，可以保持泛函的范数不变：选取$p(x)=||f||_{X_1}||x||$，容易验证其可以作为控制泛函。}
+
+    现在应用Hahn-Banach定理，$F(x)\leq ||f||_{X_1}||x||\implies ||F||\leq ||f||_{X_1}$
+
+    又$X_1\subset X\implies ||F||\geq ||f||_{X_1}\implies ||F||=||f||_{X_1}$
+\end{mybox}
+
+\begin{mybox}[green]{例1:任意两个不同元素都存在某个连续线性泛函进行区分}
+    $\forall x_1,x_2\in X$，我们要构造线性泛函$f$使得$f(x_1)\neq f(x_2)$
+
+    记$x_0=x_1-x_2$，构造span$\{x_0\}$上的泛函：$f(\lambda x_0)=\lambda ||x_0||$，此后将其延拓得到$X$上的泛函$F$
+
+    注意到$F(x_0)=||x_0||=F(x_1)-F(x_2)>0\implies F(x_1)\neq F(x_2)$，则$F$为所求。
+\end{mybox}
+
+\begin{mybox}[green]{例2}
+    设$X$是赋范空间，则$\forall x\in X, ||x||=\sup \{|f(x)||f\in X^*, ||f||=1\}$
+
+    \textbf{证明：}首先对于$||f||=1$的线性泛函$f$：$|f(x)|\leq ||f||||x||=||x||$
+
+    下构造取等：构造span$\{x\}$上的泛函：$f(\lambda x)=\lambda ||x||$，则$||f||=1$，此后将其作保范延拓得到$X$上的泛函$F$，则$F(x)=x, ||F||=1$。综上$||x||=\sup \{|f(x)||f\in X^*, ||f||=1\}$
+\end{mybox}
+
+\begin{mybox}[green]{例3:点到平面距离公式的推广}
+    点$x_0$到线性泛函$f$的核空间$\ker f$的距离公式$d=\dfrac{|f(x_0)|}{||f||}$
+
+    \textbf{证明：}考虑空间$\ker f +\text{span}\{x_0\}=\{m+\alpha x_0| \alpha\in R, m\in \text{ker}f\}$，定义该空间上的泛函$F(m+\alpha x_0)=\alpha$
+    
+    下计算泛函$F$的范数：注意到
+    \[|\alpha|=|F(m+\alpha x_0)|= |\alpha||F(x_0+\frac{m}{\alpha})|\leq |\alpha| ||F||||x_0+\frac{m}{\alpha}||\]
+    约去$\alpha$，取下确界有$||F||\geq \dfrac{1}{d}$
+
+    另一方面，注意如下式子成立\[|F(m+\alpha x_0)|\leq \dfrac{||m+\alpha x_0||}{d}\iff d\leq ||x_0+\dfrac{m}{\alpha}||\]
+    则有$||F||\leq \dfrac{1}{d}\implies ||F||=\dfrac{1}{d}$。\textbf{由Hanh-Banach定理：可以对泛函$F$作保范数延拓。}
+
+    注意到$F$和$f$的核空间相同，因此$F(x)=\lambda f(x)$，又$F(x_0)=1\implies f(x)=f(x_0)F(x)$
+    
+    取范数有$||f||=\dfrac{|f(x_0)|}{d}$，即距离公式$d=\dfrac{|f(x_0)|}{||f||}$  
+\end{mybox}
+
+\begin{mybox}[green]{例4：赋范线性空间里，任意有限维子空间都有闭补空间}
+    {\color{red}\textbf{注意：这里没有讲唯一，与后面的正交补空间有不同！}}
+
+    \textbf{证明：}设$X$为赋范线性空间，其子集$Y=\text{span}\{x_1, x_2, \cdots, x_n\}$
+
+    在$Y$上构造$n$个线性泛函$f_i(\lambda x_i)=\lambda$，计算其范数可得$||f_i||=\dfrac{1}{||x_i||}$
+
+    将其保范延拓，可得到X上的泛函$F_i$，构造线性算子$P(x)=\sum_{i=1}^{n}f_i(x)x_i$，则$\ker P$是闭空间。
+
+    我们断言：$X=Y\bigoplus \ker P$，事实上，$\forall x\in X, x=(x-P(x))+P(x), x-P(x)\in \ker P, P(x)\in Y$
+
+    且$\forall y\in \ker P\bigcap Y, P(y)=0\implies y=0$，因此$X=Y\bigoplus \ker P$
+\end{mybox}
+
+\begin{mybox}[red]{几何形式：凸集分离定理}
+    设 $X$ 是实赋范线性空间（或 Banach 空间），$A$ 和 $B$ 是 $X$ 中两个\textbf{不相交}的非空\textbf{凸集}。
+
+    若 $A$ 是\textbf{开集}，则存在 $X$ 上的非零连续线性泛函 $f \in X^*$ 以及实数 $\gamma \in \mathbb{R}$，使得：
+    \[
+        f(x) < \gamma \le f(y), \quad \forall x \in A, \forall y \in B
+    \]
+    
+    \textbf{证明：}取$-x_0\in A-B$，记$C=A-B+x_0$是一个开的凸集，则$0\in C, x_0\notin C$。
+
+    定义Minkowski泛函作为控制泛函：$p(x)=\inf \{b>0|x\in bC\}, x\in X$，则$p(bx_0)\geq b$
+
+    在span$(x_0)$上定义泛函$l(bx_0)=b\leq p(bx_0)$，则在span$(x_0)$上$p$是控制次泛函。
+
+    由Hanh-Banach定理，可以将$l$进行延拓到整个空间$X$上面。
+    
+    设$x\in C, C$为开集合，即$x$在$C$的内部 $\implies l(x)<1$
+
+    设$x=y-z+x_0 \implies l(x)=l(y)-l(z)+l(x_0)<1\implies l(y)<l(z)$
+    \newline
+
+    \textbf{评注： Minkowski泛函的构造思路其实来源于常规的范数：}
+    
+    \textbf{对于普通范数（例如$||x||=2$），我们可以将其理解成“将单位球扩大$||x||=2$倍从而覆盖到$x$”。}
+
+    \textbf{那么对于一般的（含有0的）凸集，我们也可以如此定义一个“广义的范数”，那么这个范数也想相当于一个泛函，称为Minkowski泛函。（也就是说范数是单位球的Minkowski泛函）}
+\end{mybox}
+
+\subsubsection{纲、Baire纲定理}
+\begin{mybox}[blue]{疏集}
+    若集合$A$满足\textbf{闭包}$\overline{A}$没有内点，则称其为疏集。
+
+    \textbf{没有内点的集合不一定是疏集（比如$Q$），要加上闭集的前提。}
+\end{mybox}
+
+\begin{mybox}[blue]{纲}
+    若$A=\bigcup _{n=1}^{\infty} A_n$，其中$A_n$是疏集，则$A$是第一纲的，反之则为第二纲的。
+\end{mybox}
+
+\begin{mybox}[green]{第一/二纲集的常见例子}
+    \begin{enumerate}
+        \item \textbf{$N$赋予欧式度量：第二纲集。}若$A\subset N$且$A\neq \emptyset$，设$x_0\in A$，则有$B(x_0,1/2)=\{x_0\}\subset A$，即$x_0$为内点，因此$N$中的疏集只有空集，因此$N$是第二纲的。
+        \item \textbf{$Q$在$R$中：第一纲集。}此时单点集$\{q_n\}$是一个疏集（因为此时开球不再退化成一个点），因此$Q$可以写成可数个疏集的并。
+    \end{enumerate}
+\end{mybox}
+\begin{mybox}[red]{Baire纲定理}
+    完备度量空间是第二纲的。
+
+    \textbf{证明：}若否，设$X=\bigcup_{n=1}^{+\infty}A_n\subset \bigcup_{n=1}^{+\infty}\overline{A_n}\subset X\implies X=\bigcup_{n=1}^{+\infty}\overline{A_n}$，其中$A_n$是疏集。
+    
+    不妨设$A_n$是闭的。取$x_1\in A_1, x_{n+1}\in B(x_n, \dfrac{1}{n^2})$。
+    
+    注意到有限个闭疏集的并仍然闭，因此$B(x_n, \dfrac{1}{n^2})\nsubseteq A_1\cup A_2\cdots\cup A_n$
+    
+    因此在选取$x_{n+1}$时候可以使$x_{n+1}\notin A_1\cup A_2\cdots\cup A_n$
+
+    由此构造出点列$\{x_n\}$满足$||x_{n+1}-x_n||\leq \dfrac{1}{n^2}\implies ||x_m-x_n||\leq \dfrac{1}{n^2}+\cdots+\dfrac{1}{(m-1)^2}<\dfrac{1}{n}$
+
+    因此$\{x_n\}$是柯西列，因此收敛于$x\in X$
+
+    我们断言$x\notin X$，否则$x\in A_k$，而$||x_n-x||<\dfrac{1}{n}\implies n$足够大时，
+\end{mybox}
+
+\begin{mybox}[green]{例1}
+设$A\subset R$是第一纲集，证明$A^c-A^c=R$
+
+\textbf{证明：}设$x\notin A^c-A^c\implies \{x\}\cap (A^c-A^c)=\varnothing \implies (x+A^c)\bigcap A^c=\varnothing\implies x+A^c \subset A$
+
+注意到$A$是第一纲的，因此其子集$x+A^c$是第一纲的。
+
+而$A^c$是第二纲的，平移后依旧是第二纲的，矛盾。
+\end{mybox}
+
+\begin{mybox}[green]{例2}
+设$X$是无穷维的Banach空间，证明$X$没有可数个Hamel基。
+
+\textbf{证明：}设$X$有Hamel基$\{e_1, e_2, \cdots, e_n,\cdots\}$，设$F_n=\text{span}\{e_1, e_2, \cdots, e_n\}$，这一有限维空间是闭集。
+
+我们断言$F_n$是疏集：$\forall x\in F_n, x+0.9\varepsilon e_{n+1}\in B(x, \varepsilon)$
+
+而$x+0.9\varepsilon e_{n+1}\notin F_n\implies B(x, \varepsilon)\nsubseteq F_n\implies x$不是内点，因此$F_n$是疏集。
+
+又$X=\cup _{n=1}^{+\infty} F_n$，由Baire纲定理矛盾。
+\end{mybox}
+
+\begin{mybox}[green]{例3}
+设$X$是无穷维的Banach空间，闭集列$\{F_n\}$满足$X=\cup _{n=1}^{+\infty} F_n$，证明$\cup _{n=1}^{+\infty} F_n^{\circ }$在$X$中稠密。
+
+\textbf{证明：}若否，则$\exists B(x_0, r)\cap (\cup _{n=1}^{+\infty} F_n^{\circ })=\emptyset\implies B(x_0, r)\subset (\cup _{n=1}^{+\infty} (F_n-F_n^{\circ }))$
+
+注意到$F_n-F_n^{\circ}$是疏集，因此$\cup _{n=1}^{+\infty} (F_n-F_n^{\circ })$是第一纲集，这与$B(x_0, r)$的完备性矛盾！
+
+\textbf{注：与本题方法相似的：}设$X$是完备度量空间，$U_n$是X中的一系列稠密子集，则$\cap _{n=1}^{+\infty} U_n$也是稠密的。
+\end{mybox}
+
+
+
+\subsubsection{开映射定理 }
+\begin{mybox}[blue]{开映射的定义}
+    给定赋范空间$X$和$Y$，设映射$T:X\to Y$将$X$中的任意开集映射成$Y$中的开集，则称$T$是开映射。
+\end{mybox}
+
+\begin{mybox}[red]{开映射定理}
+    给定两个\textbf{Banach空间}$X$和$Y$，若线性算子$T\in B(X, Y)$是满射$\iff T$是开映射。
+
+    \textbf{必要性证明：STEP 1：运用满射对$Y$做出刻画}
+
+    考虑集合$\bigcup _{n=1}^{\infty}TB(0,n)\subset Y$
+    
+    由于$Y$是满射，任意元素必定有原像，因此$Y\subset \bigcup _{n=1}^{\infty}TB(0,n)\implies Y=\bigcup _{n=1}^{\infty}TB(0,n)$
+
+    由于$Y$是Banach空间，由Baire纲定理：存在一个$\overline{TB(0,n)}$有内点$y$
+    
+    设$B(y,\delta)\subset \overline{TB(0,n)}\implies B(-y,\delta)\subset \overline{TB(0,n)}$
+
+    \textbf{说明：这是由于对称性，$\forall z\in B(-y,\delta)\implies -z\in B(y,\delta)\implies -z\in \overline{TB(0,n)}\implies z\in \overline{TB(0,n)}$}
+
+    因此$B(0,\delta)\subset \dfrac{1}{2}(B(y,\delta)+B(-y,\delta))\subset \overline{TB(0,n)}$
+\newline
+
+    \textbf{STEP 2：证明更小的球包含于$TB(0,n)$，去掉闭包}
+
+    \textbf{下证明$B(0,\frac{\delta}{2})\subset TB(0,n)$：}
+    \[\forall y_0\in B(0,\frac{\delta}{2})\subset\overline{TB(0,\dfrac{n}{2})}\implies \exists x_0\in B(0,\dfrac{n}{2}), ||y_0-Tx_0||<\dfrac{\delta}{4}\]
+    \textbf{思想：根据前面的结论，只能得到一个逼近的值，因此需要对残差继续逼近（有点像牛顿法）}
+    \[\text{对}y_1=y_0-Tx_0\in B(0,\dfrac{\delta}{4})\subset \overline{TB(0,\dfrac{n}{4})}\implies \exists x_1\in B(0,\dfrac{n}{4}),||y_1-Tx_1||<\dfrac{\delta}{4}\]
+
+    依次构造下去，可以得到$y_m\in B(0,\dfrac{\delta}{2^{m+1}})\implies y_m\to0$
+
+    注意到$Tx_0+Tx_1+\cdots +Tx_m=y_0-y_m$，令$m\to\infty$，可得$y_0=\displaystyle\sum_{m=0}^{\infty} Tx_m=T \displaystyle\sum_{m=0}^{\infty} x_m$
+
+    注意到$||\displaystyle\sum_{m=0}^{\infty} x_m||\leq \displaystyle\sum_{m=0}^{\infty} ||x_m||<\displaystyle\sum_{m=0}^{\infty} \dfrac{n}{2^{m+1}}=n\implies \displaystyle\sum_{m=0}^{\infty} x_m\in B(0,n)\implies y_0\in TB(0,n)$
+\newline
+
+    \textbf{STEP 3：将这个结论推广到全空间}
+
+    设$U\subset X$是开集，我们证明$TU$是开集。$\forall y\in TU, \text{设}\:y=Tx, \exists B(x,\varepsilon)\subset U$
+
+    由前面所证明的，$\exists \delta>0, B(0,\delta)\subset TB(0,1)\implies B(Tx,\varepsilon\delta)\subset TB(x,\varepsilon)\subset TU$
+
+    即$B(y,\varepsilon\delta)\subset TU$，因此证明了$TU$是开集。
+\newline
+
+    \textbf{充分性证明：}若$T$是开算子，则$TB(0,1)$是开集，且包含了$0\implies B(0,\delta)\subset TB(0,1)$
+
+    $\forall y\in Y$，考虑$\dfrac{\delta}{2||y||}y\in B(0,\delta)\subset TB(0,1)\implies \dfrac{\delta}{2||y||}y = Tx\implies y= T(\dfrac{2||y||}{\delta}x)$，因此是满射。
+\end{mybox}
+
+\begin{mybox}[red]{推论：逆算子定理}
+    设$X,Y$为\textbf{Banach空间}，若$T\in B(X,Y)$是双射，则$T^{-1}\in B(Y,X)$
+
+    \textbf{证明：}因为$T$是满射，所以$T$是开映射，$TB(0,1)$是开集，且同样含有0
+    
+    设$B(0,\delta)\subset TB(0,1)\implies B(0,1)\subset TB(0,\dfrac{1}{\delta})\implies T^{-1}B(0,1)\subset B(0,\dfrac{1}{\delta})$
+
+    $\forall y\in B(0,1), y\in Y$，有$||T^{-1}y||<1=\dfrac{1}{\delta}$
+
+    对$y$作近似归一化：令$z=\dfrac{y}{||y||+\varepsilon}\in B(0,1)\implies ||T^{-1}z||<\dfrac{1}{\delta}\implies ||T^{-1}y||<\dfrac{||y||+\varepsilon}{\delta}$
+
+    令$\varepsilon\to0\implies ||T^{-1}||\leq \dfrac{1}{\delta}$，因此$T^{-1}$是有界的，而线性易得，因此$T^{-1}\in B(Y,X)$ 
+\end{mybox}
+
+\subsubsection{共鸣定理（一致有界定理）}
+\begin{mybox}[red]{共鸣定理：讨论一致有界问题}
+    设$X$是Banach空间，$Y$是赋范空间，$B(X,Y)$中的算子族$\{T_{\lambda}\}_{\lambda\in \Lambda}$满足：$\forall x\in X$，$\sup_{\lambda\in\Lambda}||T_{\lambda}x||<\infty$，则算子族范数有统一上界$||T_{\lambda}||<M$
+
+    \textbf{理解：点点收敛$\implies$一致收敛}
+
+    \textbf{证明：}设\[A_n=\{x\in X|||T_{\lambda}x||\leq n,\forall \lambda\in\Lambda\}\]
+
+    由算子的连续性，易证明$A_n$为闭集，则$X=\bigcup _{n=1}^{\infty}A_n\implies \exists N, A_N$有内点（Baire纲定理）
+
+    设$B(x_0,\delta)\subset A_N\implies B(-x_0,\delta)\subset A_N\implies B(0,\delta)\subset A_N$
+
+    则$\forall x\in X(x\neq0), \dfrac{\delta}{2||x||}x\in B(0,\delta)\subset A_N\implies ||T_{\lambda}(\dfrac{\delta}{2||x||}x)||\leq N\implies ||T_{\lambda}x||\leq \dfrac{2N}{\delta}||x||$
+
+    因此$||T_{\lambda}||$有一致上界$\dfrac{2N}{\delta}$.
+\end{mybox}
+
+\begin{mybox}[green]{例1：构造反例}
+    \textbf{证明：存在以$2\pi$为周期的连续函数$f(x)$，其Fourier级数在某给定点不收敛。}
+
+    \textbf{利用共鸣定理，本题不需要显式给出一个具体的反例。}
+
+    定义完备空间为所有$T=2\pi$的连续函数，其范数为$L^{\infty}$范数。不妨证明存在一个$f(x)$在$0$处不收敛。
+
+    定义一列泛函$F_n$，为$x(0)$的Fourier级数的部分和：
+    \[F_nx = \dfrac{1}{2\pi}<x(t), 1>+\dfrac{1}{\pi}\sum_{k=1}^{n} <x(t), \cos nt> = \dfrac{1}{2\pi}\int_{-\pi}^{\pi} f(t)\dfrac{\sin((n+\frac{1}{2})t)}{\sin t} \dd t\]
+    下面计算泛函$F_n$的范数（这是一个积分核，是经典例题，过程略，直接使用结论）：
+    \[||F_n|| = \dfrac{1}{2\pi} |\int_{-\pi}^{\pi}\dfrac{\sin((n+\frac{1}{2})t)}{\sin t} \dd t|\approx \dfrac{4}{\pi^2}\ln n\to\infty\]
+
+    因此，若所有$T=2\pi$的连续函数Fourier级数在0处收敛，由共鸣定理可推出矛盾。
+
+    \textbf{总结：构造算子列，然后计算算子的范数（或者估计），如果发现趋于正无穷，那么必定有一个点处无法点态收敛。}
+\end{mybox}
+
+\begin{mybox}[green]{例2:将数列问题转化为算子的构造}
+    给定数列$\{\beta _n\}$，若对于任意收敛数列$\{\alpha_n\}$，$\sum_{n=1}^{+\infty} \alpha_n \beta_n <+\infty$，则级数$\sum_{n=1}^{+\infty}|\beta_n|<\infty$
+
+    \textbf{证明：}对于收敛数列空间，定义其范数为$l^{\infty}$范数。
+    
+    构造泛函：$T_n x= \sum_{i=1}^{n} x_i\beta _i$（其中$x$为收敛数列空间的一点）
+
+    由共鸣定理，泛函列$T_n$的范数有统一上界$M$。
+    注意到\[|T_n x|=|\sum_{i=1}^{n} x_i\beta _i|\leq ||x||\sum_{i=1}^{n} |\beta _i|\implies ||T_n||\leq \sum_{i=1}^{n} |\beta _i|\]
+    当$x=(sgn(b_1), sgn(b_2), \cdots, sgn(b_n), 0 , \cdots)$时可以取等
+    
+    因此$||T_n||=\sum_{i=1}^{n} |\beta _i|\leq M\implies \sum_{n=1}^{+\infty}|\beta_n|<\infty$
+\end{mybox}
+
+
+\subsubsection{闭图像定理}
+\begin{mybox}[blue]{闭算子}
+       \textbf{定义：}任取点列$\{x_n\}\subset X$，若$x_n\to x$且$Tx_n\to y$，则$y=Tx$
+
+       \textbf{理解：}连续算子的要求是，如果点列$\{x_n\}$收敛到$x$，那么$\{Tx_n\}$也必须收敛、且收敛到$Tx$。
+       
+       而闭算子可以使得$\{Tx_n\}$不收敛，只要求如果收敛，则必须收敛到对的地方（即$Tx$）。
+       
+       {\color{red}\textbf{注意：闭算子不一定把闭集映为闭集！}}
+
+       {\color{red}\textbf{反例：}}$T:l_1\to l_1$满足$T(x_1,x_2,\cdots, x_n)=(x_1,\dfrac{x_2}{2},\cdots, \dfrac{x_n}{n},\cdots)$，有$R(T)=\{x\in l_1|\sum_{n=1}^{+\infty}n|x_n|<\infty\}$
+       
+       取$R(T)$中点列$x_n=(1,\dfrac{1}{2^2},\cdots, \dfrac{1}{n^2},0,\cdots)\to x=(1,\dfrac{1}{2^2},\cdots, \dfrac{1}{n^2},\cdots)\notin R(T)$，可知$R(T)$不为闭集。
+
+       \color{red}\textbf{注意：在一般空间里，闭算子和连续算子是不充分不必要的。当$T$的定义域不闭时，连续算子推不出闭算子，而$T$的定义域为闭集时，连续算子比闭算子强。}
+    \end{mybox}
+
+
+\begin{mybox}[red]{闭图像定理：讨论闭线性算子有界的充分条件}
+    $X,Y$为Banach空间，算子$T:X\to Y$是闭算子，则也是连续算子。
+
+    {\color{red}\textbf{注：这个命题的逆命题也是正确的，即Banach空间中的算子闭和连续等价。}}
+
+    \textbf{证明：}首先定义空间$X\times Y$的范数为$||(x,y)||=||x||_X +||y||_Y$
+    
+    考虑其中子集（算子的图象）：$G(T)=\{(x, Tx)|x\in X\}$，我们断言它是完备的。
+    
+    事实上，若$\{(x_n, Tx_n)\}$是柯西列，则$\{x_n\}$和$\{Tx_n\}$都是柯西列。
+
+    设$x_n\to x, Tx_n\to y$，则由闭算子条件：$y=Tx\in Y$，因此$(x_n, Tx_n)\to (x,Tx)\in X\times Y$。
+
+    考虑算子$K:G(T) \to X$满足$K(x, Tx)=x$，这个映射显然是双射。
+    
+    注意到$||K(x, Tx)||=||x||\leq ||x||+||Tx||=||(x, Tx)||\implies ||K||\leq 1$，则$K$是有界的，$K\in B(X,Y)$。
+    
+    因此由逆映射定理：$K^{-1}$连续。
+
+    注意到$K^{-1}x=(x, Tx)$，取范数有$||x||+||Tx||=||K^{-1}x||\leq ||K^{-1}||||x||\implies ||Tx||\leq (||K^{-1}||-1)||x|| $
+    \newline
+
+    \begin{enumerate}
+        \item {\color{red}\textbf{常见用途：证明Banach空间的算子连续。因为闭算子是比连续算子更弱的条件，通常更容易证明。}}
+
+        \item \textbf{反例：如果去掉Banach空间的前提，该命题不再成立：}
+        
+        考虑$C^1[0,1]$上的求导算子$D$，易知其为线性的。
+        
+        若$\{x_n(t)\}\to x(t)$（即函数列一致收敛），且$x_n'(t)\to y(t)$，由数学分析知识：$y(t)=x'(t)$
+        
+        考虑点列$x_n(t)=t^n$，则$x_n'(t)=nt^{n-1}$不收敛（范数$\to\infty$）
+    \end{enumerate}
+    
+\end{mybox}
+
+\begin{mybox}[green]{例1：证明算子连续}
+    Hilbert空间上的线性算子$T$满足$(x, Ty)=(Tx, y)$，则$T\in B(H)$
+
+    \textbf{证明：}设点列$x_n\to x, Tx_n\to y$。
+    
+    注意到$(x_n, Tz)=(Tx_n, z)\implies (x, Tz)=(y, z)=(Tx, z)\implies y=Tx$（由于$z$任意）
+
+    因此$T$是完备空间上的闭算子，进而是连续算子。
+\end{mybox}
+
+\subsection{弱收敛}
+\begin{mybox}[blue]{弱收敛}
+    设$X$是一个赋范空间，给定点列$\{x_n\}\subset X$，若$\forall f\in B(X)$有$f(x_n)\to f(x)$，则称$x_n$弱收敛于$x$，记为$ x_n \xrightarrow{w} x$
+\end{mybox}
+
+\begin{mybox}[green]{弱收敛的例子}
+    考虑无穷维的Hilbert空间$H$，有一组标准正交基$\{e_n\}$
+    
+    考虑任意$f\in B(H)$，由（后面4.2）Riesz表示定理：$f(x)=<x,y>\implies f(e_n)=<y,e_n>$
+
+    注意到$\displaystyle\sum_{n=1}^{+\infty}<y,e_n>^2\leq ||y||^2<\infty\implies f(e_n)=<y,e_n>\to0\implies e_n$弱收敛于0
+
+    \textbf{但是$||e_n||=1\implies e_n\nrightarrow 0$，这便是弱收敛的一个经典例子。}
+\end{mybox}
+
+\begin{mybox}[green]{例：利用对偶性证明弱收敛}
+    设 $X$ 是赋范线性空间，$\{x_n\} \subset X$。若 $x_n \xrightarrow{w} x$，则 $\{x_n\}$ 是有界序列，即 $\sup_n ||x_n|| < \infty$。
+
+    \textbf{证明：} 视 $x_n$ 为 $X^{**}$ 中的元素。定义 $X^*$ 上的线性泛函 $g_n: X^* \to \mathbb{F}$ 为：
+        \[ g_n(f) = f(x_n), \quad \forall f \in X^* \]
+        由Hahn-Banach定理推论知，自然嵌入是保距的，即：
+        \[ ||g_n||_{X^{**}} = ||x_n||_X \]
+
+        对于任意固定的 $f \in X^*$，由弱收敛定义知 $f(x_n) \to f(x)$，即泛函列$\{g_n\}$点点有界。
+        
+        由一致有界原理，存在常数 $M$，使得：
+        \[ ||x_n||_X = ||g_n|| \le M, \quad \forall n \]
+\end{mybox}
+
+\begin{mybox}[blue]{弱*收敛的定义}
+    设$X$是一个赋范空间，给定点列$\{f_n\}\subset X^*$，若$\forall x\in X$有$f_n(x)\to f(x)$，则称$f_n$弱*收敛于$f$，记为$f_n \xrightarrow{w} f$
+\end{mybox}
+
+\begin{mybox}[blue]{有界算子列的强、弱和一致收敛}
+设 $X, Y$ 是 Banach 空间，算子列$\{T_n\}_{n=1}^\infty \subset B(X,Y)$，$T \in B(X,Y)$。
+
+\begin{enumerate}
+    \item \textbf{一致收敛（依范数收敛）}：若
+    \[
+    \|T_n - T\| \to 0 \quad (n \to \infty),
+    \]
+    则称 $T_n$ \textbf{一致收敛}于 $T$，记作 $T_n \to T$。
+
+    \item \textbf{强收敛（逐点收敛）}：若对任意 $x \in X$，有
+    \[
+    \|T_n x - T x\|_Y \to 0 \quad (n \to \infty),
+    \]
+    则称 $T_n$ \textbf{强收敛}于 $T$，记作 $T_n \xrightarrow{s} T$。
+
+    \item \textbf{弱收敛}：若对任意 $x \in X$ 和任意 $f \in Y^*$（$Y$ 的对偶空间），有
+    \[
+    f(T_n x) \to f(T x) \quad (n \to \infty),
+    \]
+    （即 $T_nx \xrightarrow{w} Tx$）则称 $T_n$ \textbf{弱收敛}于 $T$，记作 $T_n \xrightarrow{w} T$。
+\end{enumerate}
+
+\vspace{0.5em}
+\textbf{关系}：
+\[
+\text{一致收敛} \ \Longrightarrow \ \text{强收敛} \ \Longrightarrow \ \text{弱收敛}.
+\]
+反之一般不成立。特别地：
+\begin{itemize}
+    \item 若 $\dim Y < \infty$，则强收敛与一致收敛等价。
+    \item 若 $\dim X < \infty$，则弱收敛与强收敛等价。
+\end{itemize}
+\end{mybox}
+
+
+\section{内积空间}
+\subsection{Hilbert空间}
+\subsubsection{基本定义与性质}
+\begin{mybox}[blue]{内积空间的定义}
+    设 $X$ 是数域 $\mathbb{K}$（实数域 $\mathbb{R}$ 或复数域 $\mathbb{C}$）上的线性空间。
+    若存在映射 $\langle \cdot, \cdot \rangle: X \times X \to \mathbb{K}$，满足下列公理（$\forall x, y, z \in X, \alpha, \beta \in \mathbb{K}$）：
+    \begin{enumerate}
+        \item \textbf{共轭对称性}：$\langle x, y \rangle = \overline{\langle y, x \rangle}$；
+        \item \textbf{第一变元线性}：$\langle \alpha x + \beta y, z \rangle = \alpha \langle x, z \rangle + \beta \langle y, z \rangle$；
+        \item \textbf{正定性}：$\langle x, x \rangle \ge 0$，且 $\langle x, x \rangle = 0 \iff x = \mathbf{0}$。
+    \end{enumerate}
+    则称 $\langle \cdot, \cdot \rangle$ 为 $X$ 上的\textbf{内积}，称 $(X, \langle \cdot, \cdot \rangle)$ 为\textbf{内积空间}（或准 Hilbert 空间）。
+\end{mybox}
+
+\begin{mybox}[blue]{导出的范数与 Hilbert 空间}
+    \textbf{导出范数}：
+    内积空间可以自然地定义范数（诱导范数）：
+    \[ \|x\| = \sqrt{\langle x, x \rangle} \]
+    在此范数下，内积空间成为赋范线性空间。
+    
+    \textbf{Hilbert 空间}：
+    若内积空间 $X$ 关于由内积导出的范数是\textbf{完备}的，则称 $X$ 为 \textbf{Hilbert 空间}。
+\end{mybox}
+
+\begin{mybox}[red]{内积是一个二元连续函数}
+    \textbf{证明关键：}\[|<x_n, y_n>-<x,y>|\leq ||x_n-x||||y_n||+||y_n-y||||x_n||\]
+\end{mybox}
+\begin{mybox}[red]{内积空间和赋范空间的关系}
+    \begin{itemize}
+    \item 当内积被定义后，范数自动由$||x||=\sqrt{<x,x>}$确定（容易验证这个范数的良定义性）。
+    
+    \textbf{总之：内积空间自动为赋范空间}。
+    \item 而对于赋范空间，内积不一定能被定义出来。事实上，当且仅当所定义范数满足平行四边形等式
+    \[||x+y||^2+||x-y||^2=2||x||^2+2||y||^2\]
+    方可定义内积（极化恒等式）：\[<x,y>=\dfrac{1}{4}\sum_{k=0}^{3}i^k ||x+i^ky||\]
+    \end{itemize}
+\end{mybox}
+
+\begin{mybox}[green]{例1:\:$l^p$空间中只有$l^2$可以定义内积}
+    \textbf{证明：}注意到\[||e_1||=||e_2||=1, ||e_1+e_2||=||e_1-e_2||=2^{\frac{1}{p}}\implies 2^{\frac{2}{p}+1}=4\implies p=2\]
+
+    \textbf{注：}对于$l^2$空间，定义内积\[<a,b>=\sum_{k=1}^{+\infty}a_k\overline{b_k}\]
+\end{mybox}
+
+
+\subsubsection{正交补}
+\begin{mybox}[blue]{正交补的定义}
+    对于内积空间$H$的\textbf{任意}非空子集$M$，都能良定义其正交补为$M^{\perp}=\{x|x\perp M\}$。
+\end{mybox}
+\begin{mybox}[red]{正交补为闭集}
+    对于内积空间$H$的任意非空子集$M$，其正交补$M^{\perp}$均为闭集。
+
+    \textbf{证明：}任取$\{x_n\}\subset M^{\perp}, x_n\to x$，则$\forall y\in M, <x_n, y>=0\implies<x,y>=0$（由于内积的连续性）
+\end{mybox}
+\begin{mybox}[red]{正交补的完美性质}
+    对于内积空间$H$的任意非空子集$M$有$M^{\perp}=\overline{\text{span}(M)}^{\perp} $
+
+    \textbf{证明：}首先$\forall x\in M^{\perp}, \forall y\in \overline{\text{span}(M)}$，存在点列$\{y_n\}\to y, y_n\in \text{span}(M)$
+    
+    则有$<y_n,x>=0\implies <y,x>=0$（内积连续性）$\implies x\perp \overline{\text{span}(M)}^{\perp}$。
+    
+    另一方面$\forall x\in \overline{\text{span}(M)}^{\perp}$，显然有$x\perp M$（因为$M\subset \text{span}(M)$）$\implies x\in M^{\perp}$。综上$M^{\perp}=\overline{\text{span}(M)}^{\perp}$
+\end{mybox}
+
+\subsubsection{投影定理与正交分解}
+\begin{mybox}[red]{最佳逼近}
+    设$H$是\textbf{Banach}空间，$H_1$是其{\color{red}\textbf{闭凸子集}}，则$\forall x\in H$，在$H_1$中\textbf{存在唯一}的最佳逼近元。
+
+    \textbf{证明：}$x\in H_1$是trivial的，不妨设$x\notin H_1$，则$\{d|d=||x-y||, y\in H_1\}$有下界，设下确界为$d$。
+
+    根据下确界的定义，存在点列$\{y_n\}\subset H_1$使得$||x-y_n||\in [d,d+\dfrac{1}{n})$
+
+    为了证明点列收敛，只需验证其完备性：注意到$||x-\dfrac{y_m+y_n}{2}||^2\geq d^2$（由于凸）
+    \[\implies 2(||x-\dfrac{y_m+y_n}{2}||^2+||\dfrac{y_m-y_n}{2}||^2)=||x-y_m||^2+||x-y_n||^2\]
+    \[\implies 2d^2+\dfrac{1}{2}||y_m-y_n||^2\leq (d+\dfrac{1}{m})^2+(d+\dfrac{1}{n})^2\implies ||y_m-y_n||^2\leq 2(\dfrac{2d}{m}+\dfrac{2d}{n}+\dfrac{1}{m^2}+\dfrac{1}{n^2})\to0\]
+
+    结合$H$的完备性，可得这个点列收敛，进而极限点在$H_1$内（由闭性）
+
+    \textbf{唯一性证明：}若有两个最佳逼近元$y_1,y_2$，则\[\implies 2||x-\dfrac{d_1+d_2}{2}||^2+\dfrac{||y_1-y_2||^2}{2}||^2=||x-y_1||^2+||x-y_2||^2=2d^2\geq 2d^2+\dfrac{||y_1-y_2||^2}{2}\implies y_1=y_2\]
+\end{mybox}
+
+\begin{mybox}[red]{投影定理}
+    设$H$是\textbf{Hilbert}空间，$H_1$是$H$的一个{\color{red}\textbf{闭子空间}}，则$H=H_1\oplus H_1^{\perp}$（唯一正交分解！）。
+
+    \textbf{注：}
+    \begin{itemize}
+        \item \textbf{这里的“闭子空间”比上面的“闭凸子集”强。}
+        \item $\forall x\in H$，可以由此唯一分解$x=y+(x-y)$，那么这个$y$即为所求的唯一逼近元。
+    \end{itemize}
+    \textbf{证明：}由最佳逼近的结论，存在唯一最佳逼近元$y\in H_1$。
+
+    由最佳可知：\[\forall \alpha\in C, z\in H_1, ||x-y-\alpha z||\geq ||x-y||\]
+    \[\implies |\alpha|^2||z||^2\geq 2Re(\alpha<z,x-y>)\]
+    若$<z,x-y>\neq0$，取$\alpha=\lambda\overline{<z,x-y>}$代入有$||z||\geq\sqrt{\dfrac{2}{\lambda}}$，这与$\lambda$的任意性矛盾！ 
+
+    因此$<x-y,z>=0\implies x-y\perp H_1$，由此我们证明了唯一分解，进而证明了$H=H_1\oplus  H_1^{\perp}$
+\end{mybox}
+
+\begin{mybox}[green]{例：闭空间取两次正交补等于自身}
+    对于内积空间$H$的任意非空子集$M$，有$(M^{\perp})^{\perp}=\overline{\text{span}(M)}$
+
+    \textbf{证明：}由正交补的性质，有$M^{\perp}=\overline{\text{span}(M)}^{\perp} $
+
+    而$\overline{\text{span}(M)}$是闭空间，因此$H=\overline{\text{span}(M)}\oplus \overline{\text{span}(M)}^{\perp}\implies (\overline{\text{span}(M)}^{\perp})^{\perp}=\overline{\text{span}(M)}$
+
+    因此$(M^{\perp})^{\perp}=\overline{\text{span}(M)}$
+\end{mybox}
+
+\subsubsection{标准（规范）正交基}
+\begin{mybox}[blue]{标准正交系}
+    设$H$是内积空间，若一族非零向量$\{e_{\alpha}\}_{\alpha\in\Lambda}$满足
+    
+    （1）正交性：\(\langle e_\alpha, e_\beta \rangle = 0\) 对任意 \(\alpha \neq \beta\)；
+
+    （2）规范性：\(\|e_\alpha\| = 1\) 对任意 \(\alpha \in I\)。
+    则称这一族向量构成$H$的标准（规范）正交{\color{red}\textbf{系}}。
+    
+    \textbf{注意标准（规范）正交系不一定有可数个元素！！}
+
+\end{mybox}
+
+\begin{mybox}[red]{Bessel不等式}
+    设$\{e_{\alpha}\}_{\alpha\in\Lambda}$是$H$的一个标准正交系，则$\forall x\in H$有：
+    \[\sum_{\alpha\in\Lambda} |<x,e_{\alpha}>|^2\leq ||x||^2\]
+
+    \textbf{证明：首先左边不一定是可求和的级数（因为不一定可数），}注意到
+    \[\forall n\in N, \sum_{i=1}^{n}|<x,e_{\alpha_i}>|^2 \leq ||x||^2<+\infty\implies \forall m\in N, A_m=\{\alpha|\alpha\in\Lambda, |<x,e_{\alpha}>|\geq \dfrac{1}{m}\}\text{可数}\]
+
+    则$\bigcup _{n=1}^{\infty}A_n=\{\alpha|\alpha\in\Lambda, <x,e_{\alpha}>\neq0\}$可数，设对应的$e_{\alpha}$依次为$e_1, e_2\cdots$
+
+    则可得到Bessel不等式\[\sum_{\alpha\in\Lambda} |<x,e_{\alpha}>|^2=\sum_{n=1}^{+\infty}<x,e_{n}>^2\leq ||x||^2\]
+\end{mybox}
+
+\begin{mybox}[blue]{完备正交系：几个等价命题}
+    若 $H$ 中的\textbf{标准}正交系 $\{e_{\alpha}\}_{\alpha\in\Lambda}$ 满足以下五个等价条件之一，则称 $\{e_{\alpha}\}_{\alpha\in\Lambda}$ 是 $H$ 的\textbf{完备正交系}（标准正交基）。
+    证明过程略去。
+    \begin{enumerate}
+        \item \textbf{极大性}：
+        正交补 $\{e_{\alpha}\}^{\perp} = \{\mathbf{0}\}$
+
+        \item \textbf{稠密性（张成全空间）}：
+        $\{e_{\alpha}\}_{\alpha\in\Lambda}$ 的有限线性组合所构成的集合在 $H$ 中是稠密的。
+        即 $\overline{\text{span}\{e_{\alpha}\}} = H$。
+
+        \item \textbf{傅里叶级数展开（万物皆可展开）}：
+        空间中任意元素 $x$ 都可以由该正交系完美展开：
+        \[ x = \sum_{\alpha\in\Lambda} \langle x, e_{\alpha} \rangle e_{\alpha} \]
+        （注：由 Bessel 不等式可知，最多只有可数个系数非零）。
+
+        \item \textbf{Parseval 等式（能量守恒）}：
+        对于任意向量，Bessel 不等式恒取等号：
+        \[ ||x||^2 = \sum_{\alpha\in\Lambda} |\langle x, e_{\alpha} \rangle|^2 \]
+
+        \item \textbf{广义 Parseval 等式（内积保持）}：
+        任意两个向量的内积，完全由它们在基底上的“坐标”乘积之和决定：
+        \[ \langle x, y \rangle = \sum_{\alpha\in\Lambda} \langle x, e_{\alpha} \rangle \langle e_{\alpha}, y \rangle \]
+    \end{enumerate}
+\end{mybox}
+
+\begin{mybox}[green]{例子：$L^2[0,2\pi]$}
+    根据数学分析傅立叶级数知识可知，该空间上的一组标准正交基为$f_n(t)=\dfrac{1}{\sqrt{2\pi}}e^{int}$
+\end{mybox}
+
+\begin{mybox}[green]{例1}
+    在$L^2[a,b]$中考虑函数集$S=\{e^{2\pi int}\}$（即周期为1的傅立叶正交系）
+
+    （1）若$b-a\leq 1$，则$S^{\perp}=\{f(x)|f(x)=0 \: a.s.\}$（也就是说，区间长度够用）
+
+    \textbf{证明：}将周期为$b-a$的$f(x)$延拓为周期为$1$的$g(x)=\begin{cases}
+        f(x), a\leq x\leq b\\
+        0, b<x\leq a+1
+    \end{cases}$
+
+    那么$g(x)$的Fourier系数为$\int_{a}^{a+1} g(t)e^{2\pi int}\dd t = \int_{a}^{b} f(t)e^{2\pi int}\dd t$
+
+    若存在$g(x)\perp S\implies g(x)$的Fourier系数全部为$0\implies g(x)=0(a.s.)$
+
+    因此$S^{\perp}=\{f(x)|f(x)=0 \: a.s.\}$
+
+    （2）若$b-a>1$，则可构造出非零函数与$S$正交。
+
+    \textbf{构造：}令$f(x)=\begin{cases}
+        1, a\leq x<b-1\\
+        -1, a+1\leq x <b\\
+        0, \:\text{other cases}
+    \end{cases}$验证发现$f(x)\perp S$
+\end{mybox}
+
+\begin{mybox}[green]{例2}
+    设$\{e_n\}, \{f_n\}$是Hilbert空间中的两个标准正交系，且$\displaystyle\sum_{n=1}^{+\infty}||e_n-f_n||^2 <\infty$，证明两个正交系的完备性相互等价。
+
+    \textbf{证明： 我们采用“完备$\iff S^{\perp}=\{0\}$”的条件来证明。}
+
+    若$\{e_n\}$完备，而$\{f_n\}$不完备，则$\exists x\perp \{f_n\}\implies <x, f_n>=0$。
+
+    注意到\[<x,e_n>^2 = <x, e_n-f_n>^2\leq ||x||^2 ||e_n-f_n||^2\implies ||x||^2\leq \]
+
+
+\end{mybox}
+
+\subsubsection{可分Hilbert空间}
+\begin{mybox}[red]{Hilbert空间可分的充分必要条件}
+    Hilbert空间$H$可分$\iff$其标准正交基至多可数。
+
+    \textbf{必要性证明：}设$H$的可数稠密子集为$\{x_1,\cdots,x_n\cdots\}$，将其极大线性无关组提取出来后作Gram-Schimidt正交化可得标准正交\textbf{集}$\{e_n\}$。而这一正交规范集也是规范基：$\overline{\text{span}\{e_n\}}=\overline{\text{span}\{x_n\}}=H$ 
+
+    \textbf{充分性证明：}设$\{e_n\}_{n=1}^{N}$是一组标准正交基，则可构造可数稠密集\[\{\sum_{n=1}^{N}a_ne_n| \text{Re } a_n, |\text{Im }a_n|\in Q\}\]
+
+
+    {\color{red}\textbf{注：个数$N<\infty$时有$H\cong K^N$，$N=\infty$时有$H\cong l^2$}}
+
+    这个命题可以通过构造等距同构证明：$T(x)=\{<x,e_n>\}$，映射$T:H\to K^N/l^2$
+\end{mybox}
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Riesz表示定理}
+\begin{mybox}[red]{Riesz表示定理的内容}
+    设$f$是Hilbert空间$X$上的\textbf{连续线性}泛函，则存在\textbf{唯一的}$ y\in X$，使得$f(x)=<x, y>$
+\end{mybox}
+
+\begin{mybox}[yellow]{引入：$K^3$里的简单例子}
+    考虑定义在Hilbert空间$K^3$上的\textbf{线性函数（也是泛函）}$f(\vx)=ax_1+bx_2+cx_3=<\vt, \vx>$
+
+    其中$\vt=(a,b,c)$是平面$f(\vx)=ax_1+bx_2+cx_3=0$的法向量，也是Riesz表示定理当中的$y$。
+
+    平面$ax_1+bx_2+cx_3=0$上的点是$f(\vx)$的零点集$\mathcal{N}(f)$，而$y$正是从$\mathcal{N}(f)^{\perp}$中寻得，这启示了一般性的证明思路。
+\end{mybox}
+
+\begin{mybox}[red]{Riesz表示定理的证明}
+    \textbf{存在性证明：}首先我们断言空间$\mathcal{N}(f)=\{x|f(x)=0\}$是闭集。
+
+    事实上，对于$\{x_n\}\subset \mathcal{N}(f), x_n\to x$，由连续性可得$0=f(x_n)\to f(x)\implies x\in \mathcal{N}(f)$
+
+    回到原题，对空间进行直和分解：$X=\mathcal{N}(f)\bigoplus \mathcal{N}(f)^{\perp}$
+
+    \textbf{按照intro的思路，}我们取定$x_0\in\mathcal{N}(f)^{\perp}$作为待寻找的$'y'$的方向
+    
+    则$f(x_0)\neq0$（由直和保证），下面对$\forall x\in X$进行直和分解：$x=(x-\alpha x_0)+\alpha x_0$
+
+    其中$\alpha$用于保证$f(x-\alpha x_0)=0\implies\alpha=\dfrac{f(x)}{f(x_0)}$
+
+    又结合垂直，可得$<x-\alpha x_0, \alpha x_0>=0 \implies f(x)=\dfrac{f(x_0)}{||x_0||^2}<x,x_0>=<x,\dfrac{\overline{f(x_0)}x_0}{||x_0||^2}>$
+
+    因此待求的$y=\dfrac{\overline{f(x_0)}x_0}{||x_0||^2}$，存在性至此得证。
+
+    \textbf{唯一性证明：}若$<x, y>=<x,z>\implies<x,y-z>=0$恒成立，取$x=y-z$即可得到$y=z$。
+\end{mybox}
+
+\begin{mybox}[green]{例1：Hilbert空间与自身等距同构}
+    Riesz表示定理告诉我们，Hilbert空间上的连续线性泛函可以视为一个内积。那么我们考虑映射关系$f: X \to X^*$，将$x\in X$映为一个泛函：“与$x$做内积“（$f_x(t)=<x,t>$）。
+
+    \begin{itemize}
+        \item \textbf{首先，这是一个满射：}这正是Riesz表示定理的结论。
+        \item \textbf{其次，这个映射是线性、等距的：}线性显然，为了求$f$的范数，我们取$x\in X$，记对应的映射$\phi=f(x)$，则$\phi(y)=<x,y>\leq ||x||||y||$且等号可以取到。则$||\phi||=||x||$，由此证明了等距。
+    \end{itemize}
+
+    {\color{red}\textbf{综上，Hilbert空间的对偶空间与本身等距同构。}}
+
+    \textbf{例如，在$l^p$空间中，仅有$p=2$才能定义内积，而其对偶空间仍是$l^2$；其他$l^p$空间无法定义内积，对偶空间也是完全不同的其他$l^p$空间。}
+\end{mybox}
+
+\subsection{一些特殊的有界线性算子}
+\subsubsection{Hilbert空间上的共轭算子}
+\begin{mybox}[blue]{Hilbert空间上的共轭算子定义}
+    设$H_1,H_2$均为Hilbert空间，算子$S\in B(H_1,H_2), T\in B(H_2, H_1)$满足$\forall x\in H_1, y\in H_2$有\[<x, Ty>=<Sx, y>\]恒成立，则$S$与$T$互为共轭算子（伴随算子），记为$S=T^*, T=S^*$。
+
+    这一定义其实在高等代数中已经出现过了，这里只是把$K^n$推广到了更一般的Hilbert空间。
+\end{mybox}
+
+\begin{mybox}[red]{共轭算子的基本性质}
+    设$H_1,H_2$均为Hilbert空间，算子$S\in B(H_1,H_2)$，则
+    \begin{itemize}
+        \item $S^*$存在且唯一。
+        \item $||S||=||S^*||$（$K^n$版本就是，矩阵和它的共轭转置有完全相同的特征值）。
+    \end{itemize}
+
+    \textbf{证明：}设$x\in H_1, y\in H_2$，内积$<Sx, y>$可以视为定义在$H_1$上的泛函$f(x)=(Sx, y)$
+    
+    \textbf{我们断言$f$是一个有界线性泛函。}事实上，$f(\lambda_1x_1+\lambda_2x_2)=(S(\lambda_1x_1+\lambda_2x_2), y)=\lambda_1(Sx_1, y)+\lambda_2(Sx_2, y)=\lambda_1f(x_1)+\lambda_2f(x_2)$，因此是线性的。
+
+    且$|f(x)|\leq ||Sx||||y||\leq ||S||||x||||y||$，因此$||f||\leq ||S||||y||$有界。
+
+    \textbf{由Riesz表示定理，}存在\textbf{唯一的}$ z\in H_1$使得$f(x)=<x,z>$
+    
+    唯一性确保我们可以良定义算子$T:H_2\to H_1$使得$Ty=z$。验证$T$是有界线性算子是trivial的。
+    \newline
+
+    \textbf{下证明$||T||=||S||$：}在等式$<x, Sy>=<Tx, y>$中令$y=Tx$
+    
+    有$||Tx||^2=<x, STx>\leq ||x||||STx||\leq ||Tx||||S||||x||\implies ||S||\geq\dfrac{||Tx||}{||x||}$恒成立。
+
+    取上确界有$||S||\geq ||T||$，同理有$||T||\geq ||S||$，因此$||S||=||T||$。
+\end{mybox}
+
+\begin{mybox}[red]{高等代数($K^n$)其他的性质推广：}
+    设$T\in B(H)$，则有$||TT^*||=||T||^2$。
+
+    \textbf{证明：方法完全同上。注意到}\[<x, T^*Tx>=<Tx, Tx>=||Tx||^2\leq ||x||||T^*T||||x||\implies||T^*T||\geq\dfrac{||Tx||^2}{||x||^2}\implies ||T^*T||\geq||T||^2\]
+
+    另一方面，\[||T^*Tx||\leq ||T^*||||T||||x||=||T||^2||x||\implies ||T||^2\geq\dfrac{||T^*Tx||}{||x||}\implies ||T^*T||\leq ||T||^2\]
+
+    因此\[||T^*T||=||T||^2\]
+\end{mybox}
+
+\begin{mybox}[red]{值域和零空间的推广}
+    在线性代数里，我们有Ker$\phi \perp$ Im $\phi^*$，推广到一般Hilbert空间也有类似的结论：
+    
+    设$H$为Hilbert空间，$T\in B(H)$，记$R(T)$为值域，$N(T)$为零空间，则有\[N(T)=R(T^*)^{\perp}\]
+
+    \textbf{证明：}$\forall x\in N(T), y\in R(T^*)$，设$y=T^*z$则有$<x, y>=<x, T^*z>=<Tx, z>=0\implies x\in R(T^*)^{\perp}$
+
+    另一方面，$\forall y\in R(T^*)^{\perp}$有$0=<y,T^*Ty>=<Ty, Ty>=||Ty||^2\implies Ty=0\implies y\in N(T)$
+
+    综上有$N(T)=R(T^*)^{\perp}$。
+    \newline
+
+    \textbf{进一步的，再取一次正交补可得}$\overline{R(T^*)}=N(T)^{\perp}$（注意有界线性算子的零空间一定闭，但值域不一定闭，所以要加闭包！）
+\end{mybox}
+
+\subsubsection{自伴算子}
+\begin{mybox}[blue]{自伴算子的定义}
+    $H$为Hilbert空间，$T\in B(H)$，则当$T=T^*$时称其为自伴算子。在线性代数里，此即为Hermite阵。
+\end{mybox}
+
+\begin{mybox}[red]{自伴算子的性质}
+    $T$为自伴算子$\iff \forall x\in H, <x,Tx>\in R$
+
+    \textbf{证明：}必要性显然，对于充分性：注意到\[<\lambda x+y, T(\lambda x+y)>=|\lambda|^2<x,Tx>+\lambda <x,Ty>+\overline{\lambda}<y,Tx>+<y,Ty>\in R\]
+    \[\implies \lambda <x,Ty>+\overline{\lambda}<y,Tx>\in R\]
+
+    分别取$\lambda=1, i$可推出$<T^*x, y>=<x,Ty>=\overline{<y,Tx>}=<Tx, y>$
+    
+    $\implies T^*x=Tx$（这是因为$y$的任意性）。
+\end{mybox}
+
+\begin{mybox}[red]{自伴算子的范数公式}
+    若$T$是自伴算子，则$||T||=\displaystyle\sup_{||x||=1}|<Tx, x>|$
+
+    \textbf{证明：}记上确界$\displaystyle\sup_{||x||=1}|<Tx, x>|$
+    
+    一方面，$|<Tx, x>|\leq ||Tx||||x||\leq ||T||||x||^2=||T||\implies M\leq ||T||$
+
+    另一方面，由极化恒等式：
+    \[<T(x+y), x+y> - <T(x-y), x-y> = 2<Tx, y> +2<Ty, x>= 4<Tx, y>\]
+
+    由$M$的定义：\[4|<Tx, y>|\leq M(||x+y||^2+||x-y||^2)=2M(||x||^2+||y||^2)\]
+
+    取$y=\lambda Tx$（参数待定）有$2\lambda ||Tx||^2 \leq M(||x||^2 +\lambda^2 ||Tx||^2)$，取$\lambda =\frac{1}{||Tx||}\implies 2||Tx||\leq M(||x||^2+1)$
+
+    对于单位向量$x$，代入有$||Tx||\leq M\implies ||T||\leq M\implies ||T||=M$
+\end{mybox}
+
+\subsubsection{正常算子和酉算子}
+\begin{mybox}[blue]{正常算子的定义}
+    设$H$为Hilbert空间，若算子$T\in B(H)$满足$T^*T=TT^*$，则称$T$为正常算子。在线性代数里，这就是正规矩阵。
+
+    \textbf{特别地，}当$T^*T=TT^*=I$时$T$为酉算子。
+    
+    \textbf{注：只有一个等于$I$不能推出酉算子，例如左、右移算子。}
+\end{mybox}
+
+\begin{mybox}[red]{正常算子的充要条件}
+    算子$T\in B(H)$为正常算子$\iff ||Tx||=||T^*x||, \forall x\in H$
+
+    \textbf{证明：}注意到\begin{align*}
+        ||Tx||=||T^*x||&\iff <x, T^*Tx>=<x, TT^*x>\\
+                    &\iff <x, (T^*T-TT^*)x>=0\\ 
+                    &\iff ||T^*T-TT^*||=0\\
+                    &\iff TT^*=T^*T\\
+                    &\iff T\text{是正常算子}
+    \end{align*}
+\end{mybox}
+
+\begin{mybox}[red]{酉算子的充要条件}
+    算子$T\in B(H)$为酉算子$\iff ||Tx||=||x||, \forall x\in H$
+
+    \textbf{证明：}注意到\begin{align*}
+        ||Tx||=||x||&\iff <x, T^*Tx>=<x, x>\\
+                    &\iff <x, (T^*T-I)x>=0\\ 
+                    &\iff ||TT^*-I||=0, ||T^*T-I||=0\\
+                    &\iff TT^*=T^*T=I\\
+                    &\iff T\text{是酉算子}
+    \end{align*}
+\end{mybox}
+
+\subsubsection{投影算子}
+\begin{mybox}[blue]{投影算子的定义}
+    设$H$为一个Hilbert空间，$H_1$是其中的一个闭空间，则有正交分解$H=H_1\bigoplus H_1^{\perp}$
+
+    相应地，对于$x\in H$，存在唯一分解$x=x_1+x_2, x_1\in H_1, x_2\in H_1^{\perp}$。
+    
+    由此可定义\textbf{投影在$H_1$上的投影算子$P$使得$Px=x_1$。}
+\end{mybox}
+
+\begin{mybox}[red]{投影算子的充要条件1}
+    设$H$为一个Hilbert空间，$T\in B(H)$为投影算子$\iff T$是幂等且自伴的。（线代版本表述完全相同）
+
+    \textbf{必要性证明：}设$T$是投影到$H_1$上的算子，$\forall x\in H$分解为$x=x_1+x_2$
+    
+    则$Tx=x_1, T^2x=Tx_1=x_1=Tx$，由于$x$的任意性知$T^2=T$，即$T$是幂等的。
+    
+    另一方面，$\forall y\in H$，设其分解为$ y=y_1+y_2$，则\[<Tx, y>=<x_1, y_1+y_2>=<x_1, y_1>, <x, Ty>=<x_1+x_2, y_1>=<x_1,y_1>\implies T\text{是自伴算子}\]
+
+    \textbf{充分性证明：}首先断言$I-T$是一个有界线性算子：注意到
+    \begin{align*}
+        <x-Tx, x-Tx> &= <x,x>+<Tx, Tx>-2<Tx, x>\\
+        &=||x||^2+||Tx||^2-2<T^2x, x>\\
+        &=||x||^2+||Tx||^2-2<Tx, Tx>\\
+        &=||x||^2-||Tx||^2\leq ||x||^2\\
+        &\implies ||I-T||\leq 1
+    \end{align*}
+    因此，$N(I-T)$是一个有界线性泛函的零空间，是闭空间。
+    
+    因此，可以对全空间作正交分解$H=N(I-T)\bigoplus [N(I-T)]^{\perp}$，$T$即为$N(I-T)$上的投影算子。
+\end{mybox}
+ 
+\begin{mybox}[red]{投影算子的充要条件2}
+     设$H$为一个复Hilbert空间，$T\in B(H)$为投影算子$\iff ||Tx||^2=<Tx, x>,\forall x\in H$
+
+     \textbf{必要性证明：}$||Tx||^2 = <Tx, Tx>= <x, T^*Tx>= <x, T^2x> =<x, Tx> = <Tx, x>$
+
+     \textbf{充分性证明：}在\textbf{复}Hilbert空间里，$<Tx, x>\in R\implies T$是自伴算子。
+
+     因此$<Tx, x>=<Tx, Tx>= <T^2x, x>\implies <x, (T-T^2)x>=0\implies T=T^2$（这是由自伴算子的范数公式得到的）
+\end{mybox}
+
+\subsubsection{紧算子}
+\textbf{真正类似于矩阵算子的准确来说应该是紧算子。}
+
+\begin{mybox}[blue]{紧算子的定义}
+    设$H$是Hilbert空间，$T$是$H$上的线性算子。若$T$将$H$内的任何有界集都映成列紧集，则称$T$为紧算子。记$H$上的紧算子全体构成$C(H)$。
+\end{mybox}
+
+
+\begin{mybox}[blue]{有限秩算子}
+    若Hilbert空间$H$中的有界线性算子$T$满足$R(T)$的维数有限，则$T$是有限维的。
+    
+    $H$上的有限维算子全体记为$F(H)$。
+\end{mybox}
+
+\begin{mybox}[red]{有限秩算子的本质}
+    事实上，可以证明：有限秩算子$T\in F(H)$一定可以写成$Tx=\displaystyle\sum_{i=1}^{n} <x,x_i>y_i$（其中$x_i,y_i\in H$）
+
+    \textbf{证明：}由于值域维数有限，设其标准正交基为$e_1,\cdots, e_n$，则$Tx= \displaystyle \sum_{i=1}^{n} <Tx, e_i>e_i $
+
+    由Riesz表示定理：$f_i(x)=<Tx,e_i>$是线性泛函。
+    
+    因此$\exists x_i, f_i(x)=<x,x_i>\implies Tx= \displaystyle \sum_{i=1}^{n} <x, x_i>e_i$，得证。
+\end{mybox}
+
+\begin{mybox}[red]{紧算子的相关结论}
+    \begin{enumerate}
+        \item 紧算子是有界线性算子（$C(H)\subset B(H)$）
+        
+        \textbf{证明：}紧算子$T$把有界集合映为列紧的，即有界的，因此$TB(0,1)$有界$M\implies ||T||\leq M$
+
+        因此线性算子有界，即连续。
+
+        \item $C(H)=\overline{F(H)}$
+        
+        \textbf{证明略去，只需要知道紧算子可以用有界线性算子逼近即可。}
+
+        \item $T$是紧算子$\iff T^*$是紧算子。
+        
+        \textbf{证明：由上述2，设有限秩算子列$T_n\to T$，则$T_n^*\to T^*$且$T_n^*$也是有限秩的，因此$T^*$是紧算子。}
+
+        \item 若$\dim H=\infty$，则任意紧算子$T\in C(H)$不存在\textbf{有界}逆算子。
+        
+        \textbf{证明：若存在有界的$T^{-1}$，那么$T^{-1}$连续，即$T$将开集$B(0,1)$映为开集。
+        由于$0\in TB(0,1)$，因此$B(0,\delta)\subset TB(0,1)$，而紧算子要求$TB(0,1)$是列紧的。对于维数无穷的$B(0,\delta)$，其不为列紧的，矛盾。}
+
+    \end{enumerate}
+\end{mybox}
+
+\begin{mybox}[green]{例1:紧算子的直观认识——对空间的强烈压缩}
+    设$X, Y$是Banach空间，算子$T\in B(X, Y)$满足$R(T)$是闭集，且dim $R(T)=\infty$，证明$T$不是紧算子。
+
+    \textbf{证明：}$R(T)\subset Y$为闭集，由$Y$的完备性可以得到$R(T)$的完备性。
+
+    由开映射定理：线性算子$T:X\to R(T)$是满射，因此也是开映射。
+    
+    即$TB(0,1)$是$R(T)$中的开集合$\implies B(0,\delta)\subset TB(0,1)$
+
+    而$B(0,\delta)$是一个无穷维的单位球，不是列紧的，因此$T$没有将有界集映射为列紧集，故不是紧算子。
+\end{mybox}
+
+\begin{mybox}[green]{例2:紧算子的例题}
+    设$T$是Hilbert空间$H$上的一个紧算子，若$x_n\xrightarrow{w} x$，证明：$Tx_n\to Tx$
+
+    \textbf{证明：}通过平移，不妨设$x_n\xrightarrow{w}0$，下证明$Tx_n\to0$：
+
+    设有限秩算子列$T_m\to T$，注意到任意有限维算子$A$可以表示成$Ax =\displaystyle\sum_{i=1}^{k}<x, a_i>b_i$的形式
+    
+    因此，由弱收敛的定义，$ Ax_n\to 0$，且弱收敛序列$\{x_n\}$有界，不妨设上界为$C$。
+
+    因此，$\forall m\in N, ||Tx_n||\leq ||(T-T_m)x_n||+||T_m x_n||\leq C||T-T_m||+||T_mx_n||$
+
+    先令$n\to\infty\implies \limsup ||Tx_n||\leq C||T-T_m||$，再令$m\to\infty\implies ||Tx_n||\to0\implies Tx_n\to0$
+\end{mybox}
+\subsection{$L^2$空间理论的应用——条件数学期望}
+
+\begin{mybox}[blue]{形象理解：几何视角下的条件数学期望}
+    在概率论中，设 $(\Omega, \mathcal{F}, P)$ 为概率空间。
+    
+    所有满足 $E[X^2] < \infty$ 的随机变量构成了一个 \textbf{Hilbert 空间 $L^2(\Omega, \mathcal{F}, P)$}。
+
+    其中的内积定义为：$\langle X, Y \rangle = E[XY]$。
+\newline
+
+    \textbf{条件期望的几何本质：}
+    假设我们有一个部分信息构成的子 $\sigma$-代数 $\mathcal{G} \subset \mathcal{F}$（比如只知道某几个指标的数据）。
+    基于这些部分信息能构造出的所有随机变量，构成了 $L^2$ 空间中的一个\textbf{闭子空间 $M$}（$M = L^2(\Omega, \mathcal{G}, P)$）。
+
+    现在有一个未知的随机变量 $X$（属于大空间），我们想用已知信息（也就是子空间 $M$ 里的变量 $Y$） 去\textbf{最好地预测 $X$，也就意味着均方误差 $E[(X - Y)^2]$ 最小，即在子空间 $M$ 中寻找距离 $X$ 最近的点}。
+    \newline
+
+    由 Hilbert 空间的\textbf{正交投影定理}，这个距离最近的“最佳逼近点”存在且唯一，它正是 $X$ 在闭子空间 $M$ 上的\textbf{正交投影 $P_M X$}。
+    在概率论中，这个正交投影被赋予了一个名字，就叫\textbf{条件数学期望}：
+    \[ E[X \mid \mathcal{G}] \triangleq P_M X \]
+    
+    \textbf{核心推论：}
+    因为是正交投影，所以误差向量 $X - E[X \mid \mathcal{G}]$ 必须垂直于子空间 $M$ 中的任意元素 $Z$。
+    即内积为零：$E[(X - E[X \mid \mathcal{G}]) Z] = 0$。这正是概率论中条件期望定义的核心等式！
+\end{mybox}
+
+\end{document}
