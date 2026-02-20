@@ -1,7 +1,7 @@
 # 泛函分析学习笔记 (Functional Analysis Lecture Notes)
 
 ![LaTeX](https://img.shields.io/badge/LaTeX-Compiled-008080?logo=latex)
-![Course](https://img.shields.io/badge/Course-Functional-Analysis-blue)
+![Course](https://img.shields.io/badge/Course-Functional_Analysis-blue)
 ![University](https://img.shields.io/badge/University-RUC-red)
 
 ## 📝 简介 (Introduction in Chinese)
