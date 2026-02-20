@@ -1,5 +1,9 @@
 # 泛函分析学习笔记 (Functional Analysis Lecture Notes)
 
+![LaTeX](https://img.shields.io/badge/LaTeX-Compiled-008080?logo=latex)
+![Course](https://img.shields.io/badge/Course-Optimization_Methods-blue)
+![University](https://img.shields.io/badge/University-RUC-red)
+
 ## 📝 简介 (Introduction in Chinese)
 
 本仓库包含中国人民大学 2025 秋季学期《泛函分析》课程的完整 LaTeX 学习笔记。笔记以夯实基础、打通逻辑为核心，涵盖了从拓扑结构到算子代数的完整体系，并特别注重定理的直观几何理解与严格数学证明的结合。
